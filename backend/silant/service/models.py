@@ -1,5 +1,17 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from directory_choices import *
+from choices import *
+
+
+class User(AbstractUser):
+    type = models.CharField(
+        max_length=3,
+        choices=USER_TYPES,
+        default='MNU',
+    )
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['type']
 
 
 class MachineDirectory(models.Model):
