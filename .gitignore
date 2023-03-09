@@ -1,2 +1,3 @@
 backend/venv
+backend/.idea
 backend/silant/silant/secret_key.py
