@@ -1,4 +1,4 @@
-import { Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import './App.css';
 import { useState } from 'react';
 import Header from './pages/app/Header';
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
+      <BrowserRouter>
         <Header user={user}/>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -26,7 +26,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
-      </Router>  
+      </BrowserRouter>  
     </div>
   );
 }
