@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'service.apps.ServiceConfig',
     'rest_framework',
     'corsheaders',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -136,5 +137,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:3000',
+    'http://localhost:3000',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
