@@ -9,6 +9,7 @@ import Reclamation from './pages/Reclamation';
 import LoginPage from './pages/LoginPage';
 import Logout from './pages/Logout';
 import NotFoundPage from './pages/NotFoundPage';
+import Footer from './pages/app/Footer';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -26,6 +27,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>  
     </div>
   );
