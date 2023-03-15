@@ -20,6 +20,8 @@ from service.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/user', UserAPIView.as_view()),
+    path('api/v1/machine', MachineAPIView.as_view()),
+    path('api/v1/profile', PersonalPageAPIView.as_view()),
 
 
     path('api/v1/auth/', include('djoser.urls')),

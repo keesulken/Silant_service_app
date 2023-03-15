@@ -1,9 +1,18 @@
 .app-header {
   display: flex;
   flex-flow: column;
+  background-color: #163E6C;
 }
 
 .header-top-line {
   display: flex;
   flex-flow: row nowrap;
+}
+
+.app-footer {
+  background-color: #D20A11;
+}
+
+body {
+  background-color: #EBE6D6;
 }

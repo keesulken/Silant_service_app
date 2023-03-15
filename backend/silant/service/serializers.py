@@ -2,6 +2,51 @@ from rest_framework import serializers
 from .models import *
 
 
+class MachineTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Machine
+        fields = (
+            'pk',
+            'factory_number'
+        )
+
+
+class MachineDirectoryTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MachineDirectory
+        fields = (
+            'pk',
+            'name',
+        )
+
+
+class RepairDirectoryTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MachineDirectory
+        fields = (
+            'pk',
+            'name',
+        )
+
+
+class ClientProfileTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientProfile
+        fields = (
+            'pk',
+            'name',
+        )
+
+
+class ServiceCompanyProfileTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCompanyProfile
+        fields = (
+            'pk',
+            'name',
+        )
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -33,6 +78,14 @@ class ServiceCompanyProfileSerializer(serializers.ModelSerializer):
 
 
 class MachineLoggedUserSerializer(serializers.ModelSerializer):
+    machine_model = MachineDirectoryTableSerializer()
+    engine_model = MachineDirectoryTableSerializer()
+    transmission_model = MachineDirectoryTableSerializer()
+    drive_axle_model = MachineDirectoryTableSerializer()
+    steered_axle_model = MachineDirectoryTableSerializer()
+    client = ClientProfileTableSerializer()
+    service_company = ServiceCompanyProfileTableSerializer()
+
     class Meta:
         model = Machine
         fields = (
@@ -58,6 +111,12 @@ class MachineLoggedUserSerializer(serializers.ModelSerializer):
 
 
 class MachineAnonymousUserSerializer(serializers.ModelSerializer):
+    machine_model = MachineDirectoryTableSerializer()
+    engine_model = MachineDirectoryTableSerializer()
+    transmission_model = MachineDirectoryTableSerializer()
+    drive_axle_model = MachineDirectoryTableSerializer()
+    steered_axle_model = MachineDirectoryTableSerializer()
+
     class Meta:
         model = Machine
         fields = (
@@ -75,6 +134,11 @@ class MachineAnonymousUserSerializer(serializers.ModelSerializer):
 
 
 class MaintenanceSerializer(serializers.ModelSerializer):
+    type = RepairDirectoryTableSerializer()
+    maintenance_holder = RepairDirectoryTableSerializer()
+    machine = MachineTableSerializer()
+    service_company = ServiceCompanyProfileTableSerializer()
+
     class Meta:
         model = Maintenance
         fields = (
@@ -91,6 +155,11 @@ class MaintenanceSerializer(serializers.ModelSerializer):
 
 
 class ReclamationSerializer(serializers.ModelSerializer):
+    unit = RepairDirectoryTableSerializer()
+    repair_method = RepairDirectoryTableSerializer()
+    machine = MachineTableSerializer()
+    service_company = ServiceCompanyProfileTableSerializer()
+
     class Meta:
         model = Reclamation
         fields = (
@@ -126,3 +195,4 @@ class RepairDirectorySerializer(serializers.ModelSerializer):
             'name',
             'description',
         )
+

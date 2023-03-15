@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigation } from 'react-router'
+import HomeUnauth from './home/HomeUnauth'
+import HomeAuth from './home/HomeAuth'
 
-export default function Home() {
-  let [user, setUser] = useState([])
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/v1/user').then(res => res.json()).then(result => {
-      setUser(result[0]);
-    })
-  }, [])
-
-
-  return (
-    <div>{user.username}</div>
-  )
+export default function Home(props) {
+  if (props.user) {
+    return <HomeAuth user={props.user} />
+  } else {
+    return <HomeUnauth />
+  }
 }
