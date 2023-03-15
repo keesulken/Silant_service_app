@@ -33,7 +33,6 @@ export default function HomeAuth(props) {
                 console.log('error');
             };
           }).then(result => {
-            console.log(result);
             setMachines(result['machines']);
             setMaintenance(result['maintenance']);
             setReclamation(result['reclamation']);
@@ -60,18 +59,18 @@ export default function HomeAuth(props) {
 
   return (
     <div>
-        { user.type == 'MNU' && <p>Клиент {user.username}</p>}
-        { user.type == 'SVC' && <p>Сервисная организация {user.username}</p>}
-        { user.type == 'MFR' && <p>Представитель производителя {user.username}</p>}
+        { user.type === 'MNU' && <p>Клиент {user.username}</p>}
+        { user.type === 'SVC' && <p>Сервисная организация {user.username}</p>}
+        { user.type === 'MFR' && <p>Представитель производителя {user.username}</p>}
         <p>info about machines</p>
         <p>
             <button id='machine-table' onClick={handleClick}>main info</button>
             <button id='maintenance-table' onClick={handleClick}>maintenance</button>
             <button id='reclamation-table' onClick={handleClick}>reclamation</button>
         </p>
-        <AuthMachine items={machines} style={machinesStyle} />
-        <AuthMaintenance items={maintenance} style={maintenanceStyle} />
-        <AuthReclamation items={reclamation} style={reclamationStyle} />
+        <AuthMachine machines={machines} style={machinesStyle} />
+        <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />
+        <AuthReclamation reclamation={reclamation} style={reclamationStyle} />
     </div>
   )
 }

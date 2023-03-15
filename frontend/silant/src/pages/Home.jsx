@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigation } from 'react-router'
-import HomeUnauth from './home/HomeUnauth'
-import HomeAuth from './home/HomeAuth'
+import React from 'react';
+import HomeUnauth from './home/HomeUnauth';
+import HomeAuth from './home/HomeAuth';
 
 export default function Home(props) {
   if (props.user) {
