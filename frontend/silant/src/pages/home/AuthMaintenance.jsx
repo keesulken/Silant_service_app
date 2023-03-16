@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AuthMaintenance(props) {
   let id = 'maintenance-table-elem';
@@ -31,14 +32,18 @@ export default function AuthMaintenance(props) {
           <tbody>
             { props.maintenance.map(item => (
               <tr key={item.id}>
-                <td>{ item.type.name }</td>
+                <td><Link to={'/repair/' + item.type.pk }
+                >{ item.type.name }</Link></td>
                 <td>{ item.date }</td>
                 <td>{ item.operating_time }</td>
                 <td>{ item.work_order_number }</td>
                 <td>{ item.work_order_date }</td>
-                <td>{ item.maintenance_holder.name }</td>
-                <td>{ item.machine.factory_number }</td>
-                <td>{ item.service_company.name }</td>
+                <td><Link to={'/repair/' + item.maintenance_holder.pk }
+                >{ item.maintenance_holder.name }</Link></td>
+                <td><Link to={'/machine/' + item.machine.pk }
+                >{ item.machine.factory_number }</Link></td>
+                <td><Link to={'/company/' + item.service_company.pk }
+                >{ item.service_company.name }</Link></td>
               </tr>
             ))}
           </tbody>

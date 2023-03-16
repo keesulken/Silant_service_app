@@ -19,6 +19,30 @@ class UserAPIView(APIView):
 
 
 class MachineAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            machine = Machine.objects.get(pk=kwargs['id'])
+            maintenance = Maintenance.objects.filter(machine=machine)
+            reclamation = Reclamation.objects.filter(machine=machine)
+            machine_data = MachineLoggedUserSerializer(machine).data
+            if maintenance.exists():
+                maintenance_data = MaintenanceSerializer(maintenance, many=True).data
+            else:
+                maintenance_data = None
+            if reclamation.exists():
+                reclamation_data = ReclamationSerializer(reclamation, many=True).data
+            else:
+                reclamation_data = None
+            return Response({
+                'machine': machine_data,
+                'maintenance': maintenance_data,
+                'reclamation': reclamation_data,
+            })
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class MachineSearchAPIView(APIView):
     def post(self, request, **kwargs):
         try:
             machine = Machine.objects.get(factory_number=request.data['num'])
@@ -79,3 +103,42 @@ class PersonalPageAPIView(APIView):
                 'reclamation': reclamation_data,
             })
 
+
+class UnitAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            item = MachineDirectory.objects.get(pk=kwargs['id'])
+            item_data = MachineDirectorySerializer(item).data
+            return Response(item_data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class RepairAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            item = RepairDirectory.objects.get(pk=kwargs['id'])
+            item_data = RepairDirectorySerializer(item).data
+            return Response(item_data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class ClientAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            item = ClientProfile.objects.get(pk=kwargs['id'])
+            item_data = ClientProfileSerializer(item).data
+            return Response(item_data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class CompanyAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            item = ServiceCompanyProfile.objects.get(pk=kwargs['id'])
+            item_data = ServiceCompanyProfileSerializer(item).data
+            return Response(item_data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

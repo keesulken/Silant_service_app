@@ -7,7 +7,7 @@ export default function HomeUnauth() {
 
     function handleClick () {
         let num = document.getElementById('factory-num').value;
-        let url = 'http://127.0.0.1:8000/api/v1/machine';
+        let url = 'http://127.0.0.1:8000/api/v1/search';
         let params = {
             num: num,
         };

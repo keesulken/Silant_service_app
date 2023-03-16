@@ -4,12 +4,11 @@ import { useEffect, useState } from 'react';
 import Header from './pages/app/Header';
 import Home from './pages/Home';
 import Machine from './pages/Machine';
-import Maintenance from './pages/app/Maintenance';
-import Reclamation from './pages/Reclamation';
 import LoginPage from './pages/LoginPage';
 import Logout from './pages/Logout';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './pages/app/Footer';
+import Detail from './pages/Detail';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -36,9 +35,8 @@ function App() {
         <Header user={user}/>
         <Routes>
           <Route path="/" element={<Home user={user}/>} />
-          <Route path="/machine/:machineId" element={<Machine />} />
-          <Route path="/maintenance" element={<Maintenance />} />
-          <Route path="/reclamation" element={<Reclamation />} />
+          <Route path="/machine/:id" element={<Machine user={user}/>} />
+          <Route path="/:details/:id" element={<Detail user={user}/>} />
           <Route path="/login" element={<LoginPage user={user}/>} />
           <Route path="/logout" element={<Logout user={user}/>} />
           <Route path='*' element={<NotFoundPage />} />

@@ -61,7 +61,6 @@ class ClientProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientProfile
         fields = (
-            'user',
             'name',
             'description',
         )
@@ -71,7 +70,6 @@ class ServiceCompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCompanyProfile
         fields = (
-            'user',
             'name',
             'description',
         )
@@ -178,6 +176,8 @@ class ReclamationSerializer(serializers.ModelSerializer):
 
 
 class MachineDirectorySerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source='get_type_display')
+
     class Meta:
         model = MachineDirectory
         fields = (
@@ -188,6 +188,8 @@ class MachineDirectorySerializer(serializers.ModelSerializer):
 
 
 class RepairDirectorySerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source='get_type_display')
+
     class Meta:
         model = RepairDirectory
         fields = (

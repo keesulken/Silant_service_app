@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AuthReclamation(props) {
   let id = 'reclamation-table-elem';
@@ -35,14 +36,18 @@ export default function AuthReclamation(props) {
               <tr key={item.id}>
                 <td>{ item.rejection_date }</td>
                 <td>{ item.operating_time }</td>
-                <td>{ item.unit.name }</td>
+                <td><Link to={'/repair/' + item.unit.pk }
+                >{ item.unit.name }</Link></td>
                 <td>{ item.description }</td>
-                <td>{ item.repair_method.name }</td>
+                <td><Link to={'/repair/' + item.repair_method.pk }
+                >{ item.repair_method.name }</Link></td>
                 <td>{ item.spare_parts }</td>
                 <td>{ item.recovery_date }</td>
                 <td>{ item.downtime }</td>
-                <td>{ item.machine.factory_number }</td>
-                <td>{ item.service_company.name }</td>
+                <td><Link to={'/machine/' + item.machine.pk }
+                >{ item.machine.factory_number }</Link></td>
+                <td><Link to={'/company/' + item.service_company.pk }
+                >{ item.service_company.name }</Link></td>
               </tr>
             ))}
           </tbody>

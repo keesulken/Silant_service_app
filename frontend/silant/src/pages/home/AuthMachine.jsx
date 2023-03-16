@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AuthMachine(props) {
   let id = 'machine-table-elem';
@@ -42,22 +43,29 @@ export default function AuthMachine(props) {
               { props.machines.map(item => (
                 <tr key={item.id}>
                   <td>{ item.factory_number }</td>
-                  <td>{ item.machine_model.name }</td>
-                  <td>{ item.engine_model.name }</td>
+                  <td><Link to={'/unit/' + item.machine_model.pk}
+                  >{ item.machine_model.name }</Link></td>
+                  <td><Link to={'/unit/' + item.engine_model.pk}
+                  >{ item.engine_model.name }</Link></td>
                   <td>{ item.engine_number }</td>
-                  <td>{ item.transmission_model.name }</td>
+                  <td><Link to={'/unit/' + item.transmission_model.pk}
+                  >{ item.transmission_model.name }</Link></td>
                   <td>{ item.transmission_number }</td>
-                  <td>{ item.drive_axle_model.name }</td>
+                  <td><Link to={'/unit/' + item.drive_axle_model.pk}
+                  >{ item.drive_axle_model.name }</Link></td>
                   <td>{ item.drive_axle_number }</td>
-                  <td>{ item.steered_axle_model.name }</td>
+                  <td><Link to={'/unit/' + item.steered_axle_model.pk}
+                  >{ item.steered_axle_model.name }</Link></td>
                   <td>{ item.steered_axle_number }</td>
                   <td>{ item.supply_contract_number_date }</td>
                   <td>{ item.dispatch_date }</td>
                   <td>{ item.consignee }</td>
                   <td>{ item.delivery_address }</td>
                   <td>{ item.equipment }</td>
-                  <td>{ item.client.name }</td>
-                  <td>{ item.service_company.name }</td>
+                  <td><Link to={'/client/' + item.client.pk}
+                  >{ item.client.name }</Link></td>
+                  <td><Link to={'/company/' + item.service_company.pk}
+                  >{ item.service_company.name }</Link></td>
                 </tr>
               )) }
           </tbody>
