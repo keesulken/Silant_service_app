@@ -21,12 +21,19 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/user', UserAPIView.as_view()),
     path('api/v1/search', MachineSearchAPIView.as_view()),
+    path('api/v1/search/<int:id>', MachineSearchAPIView.as_view()),
     path('api/v1/profile', PersonalPageAPIView.as_view()),
     path('api/v1/machine/<int:id>', MachineAPIView.as_view()),
     path('api/v1/unit/<int:id>', UnitAPIView.as_view()),
+    path('api/v1/units', UnitAPIView.as_view()),
     path('api/v1/repair/<int:id>', RepairAPIView.as_view()),
+    path('api/v1/repairs', RepairAPIView.as_view()),
     path('api/v1/client/<int:id>', ClientAPIView.as_view()),
+    path('api/v1/clients', ClientAPIView.as_view()),
     path('api/v1/company/<int:id>', CompanyAPIView.as_view()),
+    path('api/v1/companies', CompanyAPIView.as_view()),
+
+
 
 
     path('api/v1/auth/', include('djoser.urls')),

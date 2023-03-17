@@ -9,6 +9,9 @@ import Logout from './pages/Logout';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './pages/app/Footer';
 import Detail from './pages/Detail';
+import Create from './pages/Create';
+import UpdateList from './pages/UpdateList';
+import Update from './pages/Update';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -37,6 +40,9 @@ function App() {
           <Route path="/" element={<Home user={user}/>} />
           <Route path="/machine/:id" element={<Machine user={user}/>} />
           <Route path="/:details/:id" element={<Detail user={user}/>} />
+          <Route path="/create/:instance" element={<Create user={user}/>} />
+          <Route path="/update/:instance" element={<UpdateList user={user}/>} />
+          <Route path="/update/:instance/:id" element={<Update user={user}/>} />
           <Route path="/login" element={<LoginPage user={user}/>} />
           <Route path="/logout" element={<Logout user={user}/>} />
           <Route path='*' element={<NotFoundPage />} />

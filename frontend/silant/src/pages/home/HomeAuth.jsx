@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthMachine from './AuthMachine';
 import AuthMaintenance from './AuthMaintenance';
 import AuthReclamation from './AuthReclamation';
+import HomeControls from './HomeControls';
 
 export default function HomeAuth(props) {
     let token = localStorage.getItem('token');
@@ -71,6 +72,7 @@ export default function HomeAuth(props) {
         <AuthMachine machines={machines} style={machinesStyle} />
         <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />
         <AuthReclamation reclamation={reclamation} style={reclamationStyle} />
+        <HomeControls user={user} />
     </div>
   )
 }

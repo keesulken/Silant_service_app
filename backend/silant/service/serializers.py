@@ -61,6 +61,7 @@ class ClientProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientProfile
         fields = (
+            'pk',
             'name',
             'description',
         )
@@ -70,6 +71,7 @@ class ServiceCompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCompanyProfile
         fields = (
+            'pk',
             'name',
             'description',
         )
@@ -196,5 +198,25 @@ class RepairDirectorySerializer(serializers.ModelSerializer):
             'type',
             'name',
             'description',
+        )
+
+
+class MachineDirectoryFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MachineDirectory
+        fields = (
+            'pk',
+            'type',
+            'name',
+        )
+
+
+class RepairDirectoryFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepairDirectory
+        fields = (
+            'pk',
+            'type',
+            'name',
         )
 

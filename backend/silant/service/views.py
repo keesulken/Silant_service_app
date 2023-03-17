@@ -43,6 +43,14 @@ class MachineAPIView(APIView):
 
 
 class MachineSearchAPIView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            machine = Machine.objects.get(pk=kwargs['id'])
+            data = MachineLoggedUserSerializer(machine).data
+            return Response(data)
+        except ObjectDoesNotExist:
+            return Response(status.HTTP_404_NOT_FOUND)
+
     def post(self, request, **kwargs):
         try:
             machine = Machine.objects.get(factory_number=request.data['num'])
@@ -106,39 +114,60 @@ class PersonalPageAPIView(APIView):
 
 class UnitAPIView(APIView):
     def get(self, request, **kwargs):
-        try:
-            item = MachineDirectory.objects.get(pk=kwargs['id'])
-            item_data = MachineDirectorySerializer(item).data
-            return Response(item_data)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        if kwargs:
+            try:
+                item = MachineDirectory.objects.get(pk=kwargs['id'])
+                item_data = MachineDirectorySerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            items = MachineDirectory.objects.all()
+            data = MachineDirectoryFormSerializer(items, many=True).data
+            return Response(data)
 
 
 class RepairAPIView(APIView):
     def get(self, request, **kwargs):
-        try:
-            item = RepairDirectory.objects.get(pk=kwargs['id'])
-            item_data = RepairDirectorySerializer(item).data
-            return Response(item_data)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        if kwargs:
+            try:
+                item = RepairDirectory.objects.get(pk=kwargs['id'])
+                item_data = RepairDirectorySerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            items = RepairDirectory.objects.all()
+            data = RepairDirectoryFormSerializer(items, many=True).data
+            return Response(data)
 
 
 class ClientAPIView(APIView):
     def get(self, request, **kwargs):
-        try:
-            item = ClientProfile.objects.get(pk=kwargs['id'])
-            item_data = ClientProfileSerializer(item).data
-            return Response(item_data)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        if kwargs:
+            try:
+                item = ClientProfile.objects.get(pk=kwargs['id'])
+                item_data = ClientProfileSerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            clients = ClientProfile.objects.all()
+            data = ClientProfileSerializer(clients, many=True).data
+            return Response(data)
 
 
 class CompanyAPIView(APIView):
     def get(self, request, **kwargs):
-        try:
-            item = ServiceCompanyProfile.objects.get(pk=kwargs['id'])
-            item_data = ServiceCompanyProfileSerializer(item).data
-            return Response(item_data)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        if kwargs:
+            try:
+                item = ServiceCompanyProfile.objects.get(pk=kwargs['id'])
+                item_data = ServiceCompanyProfileSerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            companies = ServiceCompanyProfile.objects.all()
+            data = ServiceCompanyProfileSerializer(companies, many=True).data
+            return Response(data)
+
