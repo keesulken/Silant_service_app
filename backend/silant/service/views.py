@@ -44,12 +44,17 @@ class MachineAPIView(APIView):
 
 class MachineSearchAPIView(APIView):
     def get(self, request, **kwargs):
-        try:
-            machine = Machine.objects.get(pk=kwargs['id'])
-            data = MachineLoggedUserSerializer(machine).data
+        if kwargs:
+            try:
+                machine = Machine.objects.get(pk=kwargs['id'])
+                data = MachineLoggedUserSerializer(machine).data
+                return Response(data)
+            except ObjectDoesNotExist:
+                return Response(status.HTTP_404_NOT_FOUND)
+        else:
+            items = Machine.objects.all()
+            data = MachineLoggedUserSerializer(items, many=True).data
             return Response(data)
-        except ObjectDoesNotExist:
-            return Response(status.HTTP_404_NOT_FOUND)
 
     def post(self, request, **kwargs):
         try:
@@ -171,3 +176,32 @@ class CompanyAPIView(APIView):
             data = ServiceCompanyProfileSerializer(companies, many=True).data
             return Response(data)
 
+
+class MaintenanceAPIView(APIView):
+    def get(self, request, **kwargs):
+        if kwargs:
+            try:
+                item = Maintenance.objects.get(pk=kwargs['id'])
+                item_data = MaintenanceSerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            items = Maintenance.objects.all()
+            data = MaintenanceSerializer(items, many=True).data
+            return Response(data)
+
+
+class ReclamationAPIView(APIView):
+    def get(self, request, **kwargs):
+        if kwargs:
+            try:
+                item = Reclamation.objects.get(pk=kwargs['id'])
+                item_data = ReclamationSerializer(item).data
+                return Response(item_data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            items = Reclamation.objects.all()
+            data = ReclamationSerializer(items, many=True).data
+            return Response(data)

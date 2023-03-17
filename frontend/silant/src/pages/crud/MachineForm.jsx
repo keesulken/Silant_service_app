@@ -95,6 +95,7 @@ export default function MachineForm(props) {
       <p>Комплектация (доп. опции): <input type='text' id='equipment'></input></p>
       <p>Клиент: 
         <select id='client'>
+          <option>-----</option>
           { clients.map(client => (
             <option key={client.pk}>{ client.name }</option>
           )) }
@@ -102,10 +103,15 @@ export default function MachineForm(props) {
       </p>
       <p>Сервисная компания: 
         <select id='company'>
+          <option>-----</option>
           { companies.map(company => (
             <option key={company.pk}>{ company.name }</option>
           )) }
         </select>
+      </p>
+      <p>
+        <input type='submit' value='Отправить'></input>
+        <input type='reset' value='Сброс'></input>
       </p>
     </form>
     )

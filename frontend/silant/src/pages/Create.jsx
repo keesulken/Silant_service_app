@@ -9,19 +9,24 @@ import Forbidden403 from './Forbidden403';
 
 export default function Create(props) {
     let { instance } = useParams();
+    let tags = ['machine', 'maintenance', 'reclamation', 'directory'];
 
-  if (!['machine', 'maintenance', 'reclamation', 'directory'].includes(instance)) {
+  if (!tags.includes(instance)) {
     return <NotFoundPage />
-  } else if (instance === 'maintenance' && props.user) {
+  } else if (props.user) {
+    if (instance === 'maintenance' && props.user) {
     return <MaintenanceForm />
-  } else if (instance === 'reclamation' && 
-  (props.user.type === 'SVC' || props.user.type === 'MFR')) {
+    } else if (instance === 'reclamation' && 
+    (props.user.type === 'SVC' || props.user.type === 'MFR')) {
     return <ReclamationForm />
-  } else if (instance === 'machine' && props.user.type === 'MFR') {
+    } else if (instance === 'machine' && props.user.type === 'MFR') {
     return <MachineForm />
-  } else if (instance === 'directory' && props.user.type === 'MFR') {
+    } else if (instance === 'directory' && props.user.type === 'MFR') {
     return <DirectoryForm />
-  } else {
+    } else {
     return <Forbidden403 />
+    };
+  } else {
+    return <div>No data</div>
   }
 }

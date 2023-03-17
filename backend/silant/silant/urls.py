@@ -24,12 +24,23 @@ urlpatterns = [
     path('api/v1/search/<int:id>', MachineSearchAPIView.as_view()),
     path('api/v1/profile', PersonalPageAPIView.as_view()),
     path('api/v1/machine/<int:id>', MachineAPIView.as_view()),
+    path('api/v1/machines', MachineSearchAPIView.as_view()),
+
+    path('api/v1/maintenance/<int:id>', MaintenanceAPIView.as_view()),
+    path('api/v1/maintenances', MaintenanceAPIView.as_view()),
+
+    path('api/v1/reclamation/<int:id>', ReclamationAPIView.as_view()),
+    path('api/v1/reclamations', ReclamationAPIView.as_view()),
+
     path('api/v1/unit/<int:id>', UnitAPIView.as_view()),
     path('api/v1/units', UnitAPIView.as_view()),
+
     path('api/v1/repair/<int:id>', RepairAPIView.as_view()),
     path('api/v1/repairs', RepairAPIView.as_view()),
+
     path('api/v1/client/<int:id>', ClientAPIView.as_view()),
     path('api/v1/clients', ClientAPIView.as_view()),
+
     path('api/v1/company/<int:id>', CompanyAPIView.as_view()),
     path('api/v1/companies', CompanyAPIView.as_view()),
 
