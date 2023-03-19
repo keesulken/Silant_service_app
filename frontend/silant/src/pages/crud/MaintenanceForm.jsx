@@ -45,5 +45,113 @@ export default function MaintenanceForm(props) {
     return <NotFoundPage />
   } else if (!(repairs && machines && companies)) {
     return <div>No data</div>
+  } else if (instance && instance !== 404) {
+    return (
+      <form>
+        <p>Редактирование данных о ТО</p>
+        <p>Вид ТО:
+          <select>
+            <option>{ instance.type.name }</option>
+            { repairs.filter(item => (
+              item.type === 'MNT' && item.name !== instance.type.name
+            )).map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>Дата проведения ТО:
+          <input type='date' id='mt-date' value={instance.date} />
+        </p>
+        <p>Наработка, м/час:
+          <input type='text' id='mt-time' value={instance.operating_time} />
+        </p>
+        <p>№ заказ-наряда:
+          <input type='text' id='work-order-num' 
+          value={instance.work_order_number} />
+        </p>
+        <p>Дата заказ-наряда:
+          <input type='date' id='work-order-date' 
+          value={instance.work_order_date} />
+        </p>
+        <p>Организация, проводившая ТО:
+          <select>
+            <option>{ instance.maintenance_holder.name }</option>
+            { repairs.filter(item => (
+            item.type === 'MTH' && item.name !== instance.type.name
+            )).map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>Машина:
+          <select>
+            <option>{ instance.machine.factory_number }</option>
+            { machines.filter(item => 
+            item.factory_number !== instance.machine.factory_number)
+            .map(item => 
+            <option key={item.id}>{ item.factory_number }</option>) }
+          </select>
+        </p>
+        <p>Сервисная компания:
+          <select>
+            <option>{ instance.service_company.name }</option>
+            { companies.filter(item => 
+            item.name !== instance.service_company.name)
+            .map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>
+          <input type='submit' value='Отправить' />
+          <input type='reset' value='Сброс' />
+        </p>
+      </form>
+    )
+  } else {
+    return (
+      <form>
+        <p>Создание новой записи ТО</p>
+        <p>Вид ТО:
+          <select>
+            { repairs.filter(item => (item.type === 'MNT'
+            )).map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>Дата проведения ТО:
+          <input type='date' id='mt-date' />
+        </p>
+        <p>Наработка, м/час:
+          <input type='text' id='mt-time' />
+        </p>
+        <p>№ заказ-наряда:
+          <input type='text' id='work-order-num' />
+        </p>
+        <p>Дата заказ-наряда:
+          <input type='date' id='work-order-date' />
+        </p>
+        <p>Организация, проводившая ТО:
+          <select>
+            { repairs.filter(item => (item.type === 'MTH'
+            )).map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>Машина:
+          <select>
+            { machines.map(item => 
+            <option key={item.id}>{ item.factory_number }</option>) }
+          </select>
+        </p>
+        <p>Сервисная компания:
+          <select>
+            { companies.map(item => 
+            <option key={item.pk}>{ item.name }</option>) }
+          </select>
+        </p>
+        <p>
+          <input type='submit' value='Отправить' />
+          <input type='reset' value='Сброс' />
+        </p>
+      </form>
+    )
   }
 }

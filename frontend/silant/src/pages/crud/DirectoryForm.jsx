@@ -80,6 +80,10 @@ export default function DirectoryForm(props) {
       <p>Описание: 
         <input type='text' id='description' value={instance.description}></input>
       </p>
+      <p>
+        <input type='submit' value='Отправить'></input>
+        <input type='reset' value='Сброс'></input>
+      </p>
     </form>
     )
   } else {
