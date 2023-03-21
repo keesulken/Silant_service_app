@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
 
 export default function ReclamationForm(props) {
-  let [instance, setInstance] = useState(null);
-  let [repairs, setRepairs] = useState(null);
-  let [machines, setMachines] = useState(null);
-  let [companies, setCompanies] = useState(null);
+  let [instance, setInstance] = useState();
+  let [repairs, setRepairs] = useState();
+  let [machines, setMachines] = useState();
+  let [companies, setCompanies] = useState();
+  let downtime;
+  let dt = document.getElementById('downtime-p');
 
 
   useEffect(()=>{
@@ -19,7 +21,10 @@ export default function ReclamationForm(props) {
         } else {
           console.log('error');
         };
-      }).then(result => setInstance(result))
+      }).then(result => {
+        setInstance(result);
+        downtime = result.downtime;
+      })
       .catch(error => console.log(error.message));
     };
   }, [])
@@ -41,24 +46,58 @@ export default function ReclamationForm(props) {
   }, [])
 
 
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && instance
+    && instance !== 404) {
+      document.getElementById('rl-date').value = instance.rejection_date;
+      document.getElementById('operating').value = instance.operating_time;
+      document.getElementById('rl-description').value = instance.description;
+      document.getElementById('rl-parts').value = instance.spare_parts;
+      document.getElementById('recovery-date').value = instance.recovery_date;
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function countDowntime () {
+    let rejection = new Date(document.getElementById('rl-date').value);
+    let recovery = new Date(document.getElementById('recovery-date').value);
+    downtime = (recovery - rejection) / 86400000;
+    dt.textContent = downtime;
+  }
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let data = new FormData(document.querySelector('form'));
+    data.append('downtime', downtime);
+    for (let [key, value] of data) {
+      console.log(`${key} - ${value}`);
+    }
+  }
+
+
   if (instance === 404) {
     return <NotFoundPage />
   } else if (!(repairs && machines && companies)) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form>
+      <form onSubmit={sendForm}>
         <p>Редактирование рекламации</p>
         <p>Дата отказа: 
-          <input type='date' id='rl-date' 
-          value={instance.rejection_date} />
+          <input type='date' name='rl-date'
+          id='rl-date' onChange={countDowntime} />
         </p>
         <p>Наработка: 
-          <input type='text' id='operating' 
-          value={instance.operating_time} />
+          <input type='text' name='operating'
+          id='operating' />
         </p>
         <p>Узел отказа: 
-          <select>
+          <select name='rl-unit'>
             <option>{ instance.unit.name }</option>
             { repairs.filter(item =>
               item.type === 'UNT' && item.name !== instance.unit.name)
@@ -66,11 +105,11 @@ export default function ReclamationForm(props) {
           </select>
         </p>
         <p>Описание отказа: 
-          <input type='text' id='rl-description' 
-          value={instance.description} />
+          <input type='text' name='rl-description' 
+          id='rl-description' />
         </p>
         <p>Способ восстановления: 
-          <select>
+          <select name='recovery'>
             <option>{ instance.repair_method.name }</option>
             { repairs.filter(item => 
               item.type === 'RPT' && item.name !== instance.repair_method.name)
@@ -78,16 +117,15 @@ export default function ReclamationForm(props) {
           </select>
         </p>
         <p>Используемые запасные части: 
-          <input type='text' id='rl-parts' 
-          value={instance.spare_parts} />
+          <input type='text' name='rl-parts' id='rl-parts' />
         </p>
         <p>Дата восстановления: 
-          <input type='date' id='recovery-date'
-          value={instance.recovery_date} />
+          <input type='date' name='recovery-date' id='recovery-date' 
+          onChange={countDowntime} />
         </p>
-        <p>Время простоя техники: {instance.downtime}</p>
+        <p>Время простоя техники: <b id='downtime-p'>{ instance.downtime }</b></p>
         <p>Машина: 
-          <select>
+          <select name='machine'>
             <option>{ instance.machine.factory_number }</option>
             { machines.filter(item => 
               item.factory_number !== instance.machine.factory_number)
@@ -96,7 +134,7 @@ export default function ReclamationForm(props) {
           </select>
         </p>
         <p>Сервисная компания: 
-          <select>
+          <select name='company'>
             <option>{ instance.service_company.name }</option>
             { companies.filter(item => 
               item.name !== instance.service_company.name)
@@ -106,52 +144,55 @@ export default function ReclamationForm(props) {
         </p>
         <p>
           <input type='submit' value='Отправить' />
-          <input type='reset' value='Сброс' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
         </p>
       </form>
     )
   } else {
+    
+    
+    
     return (
-      <form>
+      <form onSubmit={sendForm}>
         <p>Создание новой рекламации</p>
         <p>Дата отказа: 
-          <input type='date' id='rl-date' />
+          <input type='date' name='rl-date' id='rl-date' />
         </p>
         <p>Наработка: 
-          <input type='text' id='operating' />
+          <input type='text' name='operating' id='operating' />
         </p>
         <p>Узел отказа: 
-          <select>
+          <select name='rl-unit'>
             { repairs.filter(item =>
               item.type === 'UNT')
               .map(item => <option key={item.pk}>{ item.name }</option>) }
           </select>
         </p>
         <p>Описание отказа: 
-          <input type='text' id='rl-description' />
+          <input type='text' name='rl-description' id='rl-description' />
         </p>
         <p>Способ восстановления: 
-          <select>
+          <select name='recovery'>
             { repairs.filter(item => 
               item.type === 'RPT')
               .map(item => <option key={item.pk}>{ item.name }</option>) }
           </select>
         </p>
         <p>Используемые запасные части: 
-          <input type='text' id='rl-parts' />
+          <input type='text' name='rl-parts' id='rl-parts' />
         </p>
         <p>Дата восстановления: 
-          <input type='date' id='recovery-date' />
+          <input type='date' name='recovery-date' id='recovery-date' />
         </p>
         <p>Время простоя техники: </p>
         <p>Машина: 
-          <select>
+          <select name='machine'>
             { machines.map(item => 
               <option key={item.id}>{ item.factory_number }</option>) }
           </select>
         </p>
         <p>Сервисная компания: 
-          <select>
+          <select name='company'>
             { companies.map(item =>
               <option key={item.pk}>{ item.name }</option>) }
           </select>

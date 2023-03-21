@@ -53,23 +53,6 @@ class ServiceCompanyProfileTableSerializer(serializers.ModelSerializer):
         )
 
 
-class UserSerializer(serializers.ModelSerializer):
-    cl_profile = ClientProfileTableSerializer(many=True)
-    sc_profile = ServiceCompanyProfileTableSerializer(many=True)
-    type = serializers.CharField(source='get_type_display')
-
-    class Meta:
-        model = User
-        fields = (
-            'id',
-            'username',
-            'type',
-            'cl_profile',
-            'sc_profile',
-            'is_superuser',
-        )
-
-
 class ClientProfileSerializer(serializers.ModelSerializer):
     user = UsernameSerializer(read_only=True)
 
@@ -93,6 +76,23 @@ class ServiceCompanyProfileSerializer(serializers.ModelSerializer):
             'user',
             'name',
             'description',
+        )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    cl_profile = ClientProfileSerializer(many=True)
+    sc_profile = ServiceCompanyProfileSerializer(many=True)
+    type = serializers.CharField(source='get_type_display')
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'type',
+            'cl_profile',
+            'sc_profile',
+            'is_superuser',
         )
 
 

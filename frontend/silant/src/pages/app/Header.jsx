@@ -10,7 +10,7 @@ export default function Header(props) {
             <p className='logo'>Logo</p>
             <p className='contacts'>Telegram</p>
             { props.user && 
-            (props.user.is_superuser && <p><Link to={'/'}>Админка</Link></p>) }
+            (props.user.is_superuser && <p><Link to={'/admin'}>Админка</Link></p>) }
             <Enterquit user={props.user} />
         </div>
         <div className='header-bottom-line'>

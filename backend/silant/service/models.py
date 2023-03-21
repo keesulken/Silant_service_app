@@ -251,10 +251,6 @@ class Reclamation(models.Model):
         verbose_name='Сервисная компания'
     )
 
-    # @property
-    # def downtime(self):
-    #     return self.recovery_date - self.rejection_date
-
     def __str__(self):
         return f'Рекламация {self.unit.name} {self.rejection_date}'
 

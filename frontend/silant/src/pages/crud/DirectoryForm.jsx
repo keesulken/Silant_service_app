@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
 
 export default function DirectoryForm(props) {
-  let [instance, setInstance] = useState(null);
+  let [instance, setInstance] = useState();
   let units = [
     'Модель техники',
     'Модель двигателя',
@@ -36,9 +36,11 @@ export default function DirectoryForm(props) {
 
   useEffect(()=>{
     if (document.querySelector('form')) {
-      document.getElementById('unit-radio').checked = true;
-      document.getElementById('unit-type').style.display = 'initial';
-      document.getElementById('repair-type').style.display = 'none';
+      if (!instance) {
+        document.getElementById('unit-type').style.display = 'initial';
+        document.getElementById('repair-type').style.display = 'none';
+        document.getElementById('unit-radio').checked = true;
+      }
     }
   }, [])
 
@@ -56,16 +58,46 @@ export default function DirectoryForm(props) {
   }
 
 
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && instance
+    && instance !== 404) {
+      document.getElementById('name').value = instance.name;
+      document.getElementById('description').value = instance.description;
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let data = new FormData(document.querySelector('form'))
+    data.delete('dir-type');
+    if (!instance) {
+      if (document.getElementById('unit-radio').checked) {
+        data.delete('repair');
+      } else {
+        data.delete('unit');
+      }
+    }
+    for (let [key, value] of data) {
+      console.log(`${key} - ${value}`);
+    }
+  }
+
+
   if (instance === 404) {
     return <NotFoundPage />
   } else if (instance && instance !== 404) {
     return (
-    <form>
+    <form onSubmit={sendForm}>
       <p>Редактирование справочника</p>
       { props.type === 'unit' && <p>Справочник агрегатов</p> }
       { props.type === 'repair' && <p>Справочник по обслуживанию</p> }
-      <p>Тип справочника:
-        <select>
+      <p id='p-dir-type' style={{display: 'block'}}>Тип справочника:
+        <select name='type'>
           { props.type === 'unit' && units.map((unit, index) => (
             <option key={index}>{ unit }</option>
           )) }
@@ -75,20 +107,20 @@ export default function DirectoryForm(props) {
         </select>
       </p>
       <p>Название: 
-        <input type='text' id='name' value={instance.name}></input>
+        <input type='text' name='name' id='name' ></input>
       </p>
       <p>Описание: 
-        <input type='text' id='description' value={instance.description}></input>
+        <input type='text' name='description' id='description' ></input>
       </p>
       <p>
-        <input type='submit' value='Отправить'></input>
-        <input type='reset' value='Сброс'></input>
+        <input type='submit' value='Отправить' />
+        <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
       </p>
     </form>
     )
   } else {
     return (
-    <form>
+    <form onSubmit={sendForm}>
       <p>Создание нового справочника</p>
       <p>Назначение:
         <label>
@@ -103,28 +135,28 @@ export default function DirectoryForm(props) {
         </label>
       </p>
       <p id='unit-type'>Тип справочника: 
-        <select>
+        <select name='unit'>
           { units.map((item, index) => (
             <option key={index}>{ item }</option>
           )) }
         </select>
       </p>
       <p id='repair-type'>Тип справочника: 
-        <select>
+        <select name='repair'>
           { repairs.map((item, index) => (
             <option key={index}>{ item }</option>
           )) }
         </select>
       </p>
       <p>Название: 
-        <input type='text' id='name'></input>
+        <input type='text' name='name' id='name'></input>
       </p>
       <p>Описание: 
-        <input type='text' id='description'></input>
+        <input type='text' name='description' id='description'></input>
       </p>
       <p>
-        <input type='submit' value='Отправить'></input>
-        <input type='reset' value='Сброс'></input>
+        <input type='submit' value='Отправить' />
+        <input type='reset' value='Сброс' />
       </p>
     </form>
     )

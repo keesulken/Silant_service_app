@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
 
 export default function MaintenanceForm(props) {
-  let [instance, setInstance] = useState(null);
-  let [repairs, setRepairs] = useState(null);
-  let [machines, setMachines] = useState(null);
-  let [companies, setCompanies] = useState(null);
+  let [instance, setInstance] = useState();
+  let [repairs, setRepairs] = useState();
+  let [machines, setMachines] = useState();
+  let [companies, setCompanies] = useState();
 
 
   useEffect(()=>{
@@ -41,16 +41,58 @@ export default function MaintenanceForm(props) {
   }, [])
 
 
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && instance
+    && instance !== 404) {
+      document.getElementById('mt-date').value = instance.date;
+      document.getElementById('mt-time').value = instance.operating_time;
+      document.getElementById('work-order-num').value = instance.work_order_number;
+      document.getElementById('work-order-date').value = instance.work_order_date;
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let isNumber = n => !isNaN(n);
+    let errors = [];
+    let now = new Date();
+    let data = new FormData(document.querySelector('form'));
+    for (let [key, value] of data) {
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    if ((now - new Date(data.get('mt-date')) < 0) || 
+    (now - new Date(data.get('work-order-date')) < 0) ) {
+      errors.push('invalid date');
+    };
+    if (!isNumber(data.get('mt-time'))) {
+      errors.push('operating must be numeric')
+    };
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      
+    };
+  }
+
+
   if (instance === 404) {
     return <NotFoundPage />
   } else if (!(repairs && machines && companies)) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form>
+      <form onSubmit={sendForm}>
         <p>Редактирование данных о ТО</p>
         <p>Вид ТО:
-          <select>
+          <select name='mt-type'>
             <option>{ instance.type.name }</option>
             { repairs.filter(item => (
               item.type === 'MNT' && item.name !== instance.type.name
@@ -59,21 +101,21 @@ export default function MaintenanceForm(props) {
           </select>
         </p>
         <p>Дата проведения ТО:
-          <input type='date' id='mt-date' value={instance.date} />
+          <input type='date' name='mt-date' id='mt-date' />
         </p>
         <p>Наработка, м/час:
-          <input type='text' id='mt-time' value={instance.operating_time} />
+          <input type='text' name='mt-time' id='mt-time' />
         </p>
         <p>№ заказ-наряда:
-          <input type='text' id='work-order-num' 
-          value={instance.work_order_number} />
+          <input type='text' name='work-order-num' 
+          id='work-order-num' />
         </p>
         <p>Дата заказ-наряда:
-          <input type='date' id='work-order-date' 
-          value={instance.work_order_date} />
+          <input type='date' name='work-order-date' 
+          id='work-order-date' />
         </p>
         <p>Организация, проводившая ТО:
-          <select>
+          <select name='mt-holder'>
             <option>{ instance.maintenance_holder.name }</option>
             { repairs.filter(item => (
             item.type === 'MTH' && item.name !== instance.type.name
@@ -82,7 +124,7 @@ export default function MaintenanceForm(props) {
           </select>
         </p>
         <p>Машина:
-          <select>
+          <select name='machine'>
             <option>{ instance.machine.factory_number }</option>
             { machines.filter(item => 
             item.factory_number !== instance.machine.factory_number)
@@ -91,7 +133,7 @@ export default function MaintenanceForm(props) {
           </select>
         </p>
         <p>Сервисная компания:
-          <select>
+          <select name='company'>
             <option>{ instance.service_company.name }</option>
             { companies.filter(item => 
             item.name !== instance.service_company.name)
@@ -101,48 +143,51 @@ export default function MaintenanceForm(props) {
         </p>
         <p>
           <input type='submit' value='Отправить' />
-          <input type='reset' value='Сброс' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
         </p>
       </form>
     )
   } else {
+    
+    
+    
     return (
-      <form>
+      <form onSubmit={sendForm}>
         <p>Создание новой записи ТО</p>
         <p>Вид ТО:
-          <select>
+          <select name='mt-type'>
             { repairs.filter(item => (item.type === 'MNT'
             )).map(item => 
             <option key={item.pk}>{ item.name }</option>) }
           </select>
         </p>
         <p>Дата проведения ТО:
-          <input type='date' id='mt-date' />
+          <input type='date' name='mt-date' id='mt-date' />
         </p>
         <p>Наработка, м/час:
-          <input type='text' id='mt-time' />
+          <input type='text' name='mt-time' id='mt-time' />
         </p>
         <p>№ заказ-наряда:
-          <input type='text' id='work-order-num' />
+          <input type='text' name='work-order-num' id='work-order-num' />
         </p>
         <p>Дата заказ-наряда:
-          <input type='date' id='work-order-date' />
+          <input type='date' name='work-order-date' id='work-order-date' />
         </p>
         <p>Организация, проводившая ТО:
-          <select>
+          <select name='mt-holder'>
             { repairs.filter(item => (item.type === 'MTH'
             )).map(item => 
             <option key={item.pk}>{ item.name }</option>) }
           </select>
         </p>
         <p>Машина:
-          <select>
+          <select name='machine'>
             { machines.map(item => 
             <option key={item.id}>{ item.factory_number }</option>) }
           </select>
         </p>
         <p>Сервисная компания:
-          <select>
+          <select name='company'>
             { companies.map(item => 
             <option key={item.pk}>{ item.name }</option>) }
           </select>

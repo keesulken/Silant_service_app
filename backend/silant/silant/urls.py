@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/v1/directory/<str:instance>', DirectoryListAPIView.as_view()),
 
     path('api/v1/machine/<int:id>', MachineAPIView.as_view()),
+    path('api/v1/machine', MachineAPIView.as_view()),
     path('api/v1/machines', MachineSearchAPIView.as_view()),
 
     path('api/v1/maintenance/<int:id>', MaintenanceAPIView.as_view()),

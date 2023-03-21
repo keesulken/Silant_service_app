@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import NotFoundPage from '../NotFoundPage';
 
 export default function MachineForm(props) {
-  let [instance, setInstance] = useState(null);
-  let [units, setUnits] = useState(null);
-  let [clients, setClients] = useState(null);
-  let [companies, setCompanies] = useState(null);
+  let [instance, setInstance] = useState();
+  let [units, setUnits] = useState();
+  let [clients, setClients] = useState();
+  let [companies, setCompanies] = useState();
 
 
   useEffect(()=>{
@@ -41,18 +41,49 @@ export default function MachineForm(props) {
     .catch(error => console.log(error.message));
   }, [])
 
+
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && instance
+    && instance !== 404) {
+      document.getElementById('serial').value = instance.factory_number;
+      document.getElementById('engine').value = instance.engine_number;
+      document.getElementById('transmission').value = instance.transmission_number;
+      document.getElementById('drive').value = instance.drive_axle_number;
+      document.getElementById('steered').value = instance.steered_axle_number;
+      document.getElementById('supply').value = instance.supply_contract_number_date;
+      document.getElementById('dispatch').value = instance.dispatch_date;
+      document.getElementById('consignee').value = instance.consignee;
+      document.getElementById('address').value = instance.delivery_address;
+      document.getElementById('equipment').value = instance.equipment;
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let data = new FormData(document.querySelector('form'))
+    for (let [key, value] of data) {
+      console.log(`${key} - ${value}`);
+    }
+  }
+
+
   if (instance === 404) {
     return <NotFoundPage />
   } else if (!(units && clients && companies)) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form>
+      <form onSubmit={sendForm}>
       <p>Редактирование записи о машине</p>
-      <p>Зав. № машины: <input type='text' id='serial' 
-      value={instance.factory_number} /></p>
+      <p>Зав. № машины: <input type='text' name='serial' 
+      id='serial' /></p>
       <p>Модель техники: 
-        <select id='tech-model'>
+        <select name='tech-model'>
           <option>{ instance.machine_model.name }</option>
           { units.filter(unit => 
           unit.type === 'MCN' && unit.name !== instance.machine_model.name)
@@ -61,7 +92,7 @@ export default function MachineForm(props) {
         </select>
       </p>
       <p>Модель двигателя: 
-        <select id='eng-model'>
+        <select name='eng-model'>
           <option>{ instance.engine_model.name }</option>
           { units.filter(unit => 
           unit.type === 'ENG' && unit.name !== instance.engine_model.name)
@@ -69,10 +100,10 @@ export default function MachineForm(props) {
             <option key={unit.pk}>{ unit.name }</option>)) }
         </select>
       </p>
-      <p>Зав. № двигателя: <input type='text' id='engine' 
-      value={ instance.engine_number } /></p>
+      <p>Зав. № двигателя: <input type='text' name='engine' 
+      id='engine' /></p>
       <p>Модель трансмиссии: 
-        <select id='trm-model'>
+        <select name='trm-model'>
           <option>{ instance.transmission_model.name }</option>
           { units.filter(unit => 
           unit.type === 'TRM' && unit.name !== instance.transmission_model.name)
@@ -80,10 +111,10 @@ export default function MachineForm(props) {
             <option key={unit.pk}>{ unit.name }</option>)) }
         </select>
       </p>
-      <p>Зав. № трансмиссии: <input type='text' id='transmission' 
-      value={ instance.transmission_number } /></p>
+      <p>Зав. № трансмиссии: <input type='text' name='transmission' 
+      id='transmission' /></p>
       <p>Модель ведущего моста: 
-        <select id='dra-model'>
+        <select name='dra-model'>
           <option>{ instance.drive_axle_model.name }</option>
           { units.filter(unit => 
           unit.type === 'DRA' && unit.name !== instance.drive_axle_model.name)
@@ -91,10 +122,10 @@ export default function MachineForm(props) {
             <option key={unit.pk}>{ unit.name }</option>)) }
         </select>
       </p>
-      <p>Зав. № ведущего моста: <input type='text' id='drive' 
-      value={instance.drive_axle_number} /></p>
+      <p>Зав. № ведущего моста: <input type='text' name='drive' 
+      id='drive' /></p>
       <p>Модель управляемого моста: 
-        <select id='sta-model'>
+        <select name='sta-model'>
           <option>{ instance.steered_axle_model.name }</option>
           { units.filter(unit => 
           unit.type === 'STA' && unit.name !== instance.steered_axle_model.name)
@@ -102,20 +133,20 @@ export default function MachineForm(props) {
             <option key={unit.pk}>{ unit.name }</option>)) }
         </select>
       </p>
-      <p>Зав. № управляемого моста: <input type='text' id='steered' 
-      value={instance.steered_axle_number} /></p>
-      <p>Договор поставки №, дата: <input type='text' id='supply' 
-      value={instance.supply_contract_number_date} /></p>
-      <p>Дата отгрузки с завода: <input type='date' id='dispatch' 
-      value={instance.dispatch_date} /></p>
-      <p>Грузополучатель (конечный потребитель): <input type='text' id='consignee' 
-      value={instance.consignee} /></p>
-      <p>Адрес поставки (эксплуатации): <input type='text' id='address' 
-      value={instance.delivery_address} /></p>
-      <p>Комплектация (доп. опции): <input type='text' id='equipment' 
-      value={instance.equipment} /></p>
+      <p>Зав. № управляемого моста: <input type='text' name='steered' 
+      id='steered' /></p>
+      <p>Договор поставки №, дата: <input type='text' name='supply' 
+      id='supply' /></p>
+      <p>Дата отгрузки с завода: <input type='date' name='dispatch' 
+      id='dispatch' /></p>
+      <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee' 
+      id='consignee' /></p>
+      <p>Адрес поставки (эксплуатации): <input type='text' name='address' 
+      id='address' /></p>
+      <p>Комплектация (доп. опции): <input type='text' name='equipment' 
+      id='equipment' /></p>
       <p>Клиент: 
-        <select id='client'>
+        <select name='client'>
           <option>{ instance.client.name }</option>
           { clients.filter(client => 
           client.name !== instance.client.name).map(client => (
@@ -124,7 +155,7 @@ export default function MachineForm(props) {
         </select>
       </p>
       <p>Сервисная компания: 
-        <select id='company'>
+        <select name='company'>
           <option>{ instance.service_company.name }</option>
           { companies.filter(company => 
           company.name !== instance.service_company.name)
@@ -135,61 +166,64 @@ export default function MachineForm(props) {
       </p>
       <p>
         <input type='submit' value='Отправить'></input>
-        <input type='reset' value='Сброс'></input>
+        <input type='reset' value='Сброс' onMouseLeave={dataLoader}></input>
       </p>
     </form>  
     )
   } else {
+    
+    
+    
     return (
-    <form>
+    <form onSubmit={sendForm}>
       <p>Создание новой записи о машине</p>
-      <p>Зав. № машины: <input type='text' id='serial'></input></p>
+      <p>Зав. № машины: <input type='text' name='serial' ></input></p>
       <p>Модель техники: 
-        <select id='tech-model'>
+        <select name='tech-model'>
           { units.filter(unit => unit.type === 'MCN').map(unit => (
             <option key={unit.pk}>{ unit.name }</option>
           )) }
         </select>
       </p>
       <p>Модель двигателя: 
-        <select id='eng-model'>
+        <select name='eng-model'>
           { units.filter(unit => unit.type === 'ENG').map(unit => (
             <option key={unit.pk}>{ unit.name }</option>
           )) }
         </select>
       </p>
-      <p>Зав. № двигателя: <input type='text' id='engine'></input></p>
+      <p>Зав. № двигателя: <input type='text' name='engine'></input></p>
       <p>Модель трансмиссии: 
-        <select id='trm-model'>
+        <select name='trm-model'>
           { units.filter(unit => unit.type === 'TRM').map(unit => (
             <option key={unit.pk}>{ unit.name }</option>
           )) }
         </select>
       </p>
-      <p>Зав. № трансмиссии: <input type='text' id='transmission'></input></p>
+      <p>Зав. № трансмиссии: <input type='text' name='transmission'></input></p>
       <p>Модель ведущего моста: 
-        <select id='dra-model'>
+        <select name='dra-model'>
           { units.filter(unit => unit.type === 'DRA').map(unit => (
             <option key={unit.pk}>{ unit.name }</option>
           )) }
         </select>
       </p>
-      <p>Зав. № ведущего моста: <input type='text' id='drive'></input></p>
+      <p>Зав. № ведущего моста: <input type='text' name='drive'></input></p>
       <p>Модель управляемого моста: 
-        <select id='sta-model'>
+        <select name='sta-model'>
           { units.filter(unit => unit.type === 'STA').map(unit => (
             <option key={unit.pk}>{ unit.name }</option>
           )) }
         </select>
       </p>
-      <p>Зав. № управляемого моста: <input type='text' id='steered'></input></p>
-      <p>Договор поставки №, дата: <input type='text' id='supply'></input></p>
-      <p>Дата отгрузки с завода: <input type='date' id='dispatch'></input></p>
-      <p>Грузополучатель (конечный потребитель): <input type='text' id='consignee'></input></p>
-      <p>Адрес поставки (эксплуатации): <input type='text' id='address'></input></p>
-      <p>Комплектация (доп. опции): <input type='text' id='equipment'></input></p>
+      <p>Зав. № управляемого моста: <input type='text' name='steered'></input></p>
+      <p>Договор поставки №, дата: <input type='text' name='supply'></input></p>
+      <p>Дата отгрузки с завода: <input type='date' name='dispatch'></input></p>
+      <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee'></input></p>
+      <p>Адрес поставки (эксплуатации): <input type='text' name='address'></input></p>
+      <p>Комплектация (доп. опции): <input type='text' name='equipment'></input></p>
       <p>Клиент: 
-        <select id='client'>
+        <select name='client'>
           <option>-----</option>
           { clients.map(client => (
             <option key={client.pk}>{ client.name }</option>
@@ -197,7 +231,7 @@ export default function MachineForm(props) {
         </select>
       </p>
       <p>Сервисная компания: 
-        <select id='company'>
+        <select name='company'>
           <option>-----</option>
           { companies.map(company => (
             <option key={company.pk}>{ company.name }</option>
