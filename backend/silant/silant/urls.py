@@ -20,9 +20,12 @@ from service.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/user', UserAPIView.as_view()),
+    path('api/v1/user/<int:id>', UserAPIView.as_view()),
     path('api/v1/search', MachineSearchAPIView.as_view()),
     path('api/v1/search/<int:id>', MachineSearchAPIView.as_view()),
     path('api/v1/profile', PersonalPageAPIView.as_view()),
+    path('api/v1/directory/<str:instance>', DirectoryListAPIView.as_view()),
+
     path('api/v1/machine/<int:id>', MachineAPIView.as_view()),
     path('api/v1/machines', MachineSearchAPIView.as_view()),
 

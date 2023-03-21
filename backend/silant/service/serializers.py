@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import *
 
 
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username',)
+
+
 class MachineTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Machine
@@ -48,30 +54,43 @@ class ServiceCompanyProfileTableSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    cl_profile = ClientProfileTableSerializer(many=True)
+    sc_profile = ServiceCompanyProfileTableSerializer(many=True)
+    type = serializers.CharField(source='get_type_display')
+
     class Meta:
         model = User
         fields = (
             'id',
             'username',
             'type',
+            'cl_profile',
+            'sc_profile',
+            'is_superuser',
         )
 
 
 class ClientProfileSerializer(serializers.ModelSerializer):
+    user = UsernameSerializer(read_only=True)
+
     class Meta:
         model = ClientProfile
         fields = (
             'pk',
+            'user',
             'name',
             'description',
         )
 
 
 class ServiceCompanyProfileSerializer(serializers.ModelSerializer):
+    user = UsernameSerializer(read_only=True)
+
     class Meta:
         model = ServiceCompanyProfile
         fields = (
             'pk',
+            'user',
             'name',
             'description',
         )
@@ -183,6 +202,7 @@ class MachineDirectorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MachineDirectory
         fields = (
+            'id',
             'type',
             'name',
             'description',
@@ -195,6 +215,7 @@ class RepairDirectorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairDirectory
         fields = (
+            'id',
             'type',
             'name',
             'description',

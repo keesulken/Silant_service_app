@@ -12,7 +12,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['type']
+    REQUIRED_FIELDS = ['type', 'is_superuser']
 
 
 class MachineDirectory(models.Model):
@@ -67,7 +67,8 @@ class ClientProfile(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Аккаунт в системе'
+        verbose_name='Аккаунт в системе',
+        related_name='cl_profile'
     )
     name = models.CharField(max_length=255,
                             verbose_name='Название организации-клиента')
@@ -86,7 +87,8 @@ class ServiceCompanyProfile(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Аккаунт в системе'
+        verbose_name='Аккаунт в системе',
+        related_name='sc_profile'
     )
     name = models.CharField(max_length=255,
                             verbose_name='Название сервисной организации')

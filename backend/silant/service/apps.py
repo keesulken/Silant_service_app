@@ -6,5 +6,3 @@ class ServiceConfig(AppConfig):
     name = 'service'
     verbose_name = 'Сервис'
 
-    def ready(self):
-        import service.signals

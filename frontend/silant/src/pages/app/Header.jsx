@@ -1,6 +1,6 @@
 import React from 'react';
 import Enterquit from './Enterquit';
-
+import { Link } from 'react-router-dom';
 
 
 export default function Header(props) {
@@ -9,6 +9,8 @@ export default function Header(props) {
         <div className='header-top-line'>
             <p className='logo'>Logo</p>
             <p className='contacts'>Telegram</p>
+            { props.user && 
+            (props.user.is_superuser && <p><Link to={'/'}>Админка</Link></p>) }
             <Enterquit user={props.user} />
         </div>
         <div className='header-bottom-line'>

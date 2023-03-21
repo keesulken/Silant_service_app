@@ -13,9 +13,17 @@ User = get_user_model()
 
 class UserAPIView(APIView):
     def get(self, request, **kwargs):
-        user = User.objects.all()
-        data = UserSerializer(user, many=True).data
-        return Response(data)
+        if kwargs:
+            try:
+                user = User.objects.get(pk=kwargs['id'])
+                data = UserSerializer(user).data
+                return Response(data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            user = User.objects.all()
+            data = UserSerializer(user, many=True).data
+            return Response(data)
 
 
 class MachineAPIView(APIView):
@@ -205,3 +213,17 @@ class ReclamationAPIView(APIView):
             items = Reclamation.objects.all()
             data = ReclamationSerializer(items, many=True).data
             return Response(data)
+
+
+class DirectoryListAPIView(APIView):
+    def get(self, request, **kwargs):
+        if kwargs['instance'] == 'units':
+            items = MachineDirectory.objects.all()
+            data = MachineDirectorySerializer(items, many=True).data
+            return Response(data)
+        elif kwargs['instance'] == 'repairs':
+            items = RepairDirectory.objects.all()
+            data = RepairDirectorySerializer(items, many=True).data
+            return Response(data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

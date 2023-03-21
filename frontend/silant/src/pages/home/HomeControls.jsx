@@ -14,27 +14,27 @@ export default function HomeControls(props) {
 
   return (
     <div>
-        { props.user.type === 'MNU' && <p>
-            <button onClick={(e) => create('maintenance', e)}>Create maintenance</button></p>}
-        { props.user.type === 'SVC' && <p>
-            <button onClick={(e) => create('maintenance', e)}>Create maintenance</button>
-            <button onClick={(e) => create('reclamation', e)}>Create reclamation</button></p>}
+        { props.user.type === 'MNU' && <p>Создать новую запись: 
+            <button onClick={(e) => create('maintenance', e)}>Тех. обслуживание</button></p>}
+        { props.user.type === 'SVC' && <p>Создать новую запись: 
+            <button onClick={(e) => create('maintenance', e)}>Тех. обслуживание</button>
+            <button onClick={(e) => create('reclamation', e)}>Рекламация</button></p>}
         { props.user.type === 'MFR' && 
         <>
-        <p>
-            <button onClick={(e) => create('machine', e)}>Create machine</button>
-            <button onClick={(e) => create('maintenance', e)}>Create maintenance</button>
-            <button onClick={(e) => create('reclamation', e)}>Create reclamation</button>
+        <p>Создать запись: 
+            <button onClick={(e) => create('machine', e)}>Машина</button>
+            <button onClick={(e) => create('maintenance', e)}>Тех. обслуживание</button>
+            <button onClick={(e) => create('reclamation', e)}>Рекламация</button>
         </p>
-        <p>
-            <button onClick={(e) => update('machine', e)}>Update machine</button>
-            <button onClick={(e) => update('maintenance', e)}>Update maintenance</button>
-            <button onClick={(e) => update('reclamation', e)}>Update reclamation</button>
+        <p>Редактировать запись: 
+            <button onClick={(e) => update('machine', e)}>Машина</button>
+            <button onClick={(e) => update('maintenance', e)}>Тех. обслуживание</button>
+            <button onClick={(e) => update('reclamation', e)}>Рекламация</button>
         </p>
-        <p>
-            <button onClick={(e) => create('directory', e)}>Create directory</button>
-            <button onClick={(e) => update('directory', e)}>Update directory</button>
-            <button onClick={(e) => update('profile', e)}>Update client profile</button>
+        <p>Управление справочниками: 
+            <button onClick={(e) => create('directory', e)}>Создать запись</button>
+            <button onClick={(e) => update('directory', e)}>Редактировать записи</button>
+            <button onClick={(e) => update('profile', e)}>Редактировать профили</button>
         </p>
         </>}
     </div>
