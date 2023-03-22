@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Forbidden403 from '../Forbidden403';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserForm(props) {
   let {id} = useParams();
@@ -13,6 +14,7 @@ export default function UserForm(props) {
   let warning = document.getElementById('warning');
   let cb = document.getElementById('admin-cb');
   let input = document.getElementById('password-input');
+  let navigate = useNavigate();
   let tags = [
     'Представитель производителя', 
     'Сервисная организация', 
@@ -47,21 +49,23 @@ export default function UserForm(props) {
 
 
   useEffect(()=>{
-    if (user && name && desc) {
-      input.style.display = 'none';
-      warning.style.display = 'none';
-      if (user.type === tags[0]) {
+      if (user && name && desc) {
+        warning.style.display = 'none';
+        if (user.type === tags[0]) {
+          name.style.display = 'none';
+          desc.style.display = 'none';
+        };
+        if (user.is_superuser) {
+          cb.checked = true;
+        };
+        if (input) {
+          input.style.display = 'none';
+        };
+      } else if (name && desc) {
         name.style.display = 'none';
         desc.style.display = 'none';
-      }
-      if (user.is_superuser) {
-        cb.checked = true;
-      }
-    } else if (name && desc) {
-      name.style.display = 'none';
-      desc.style.display = 'none';
-      warning.style.display = 'none';
-    }
+        warning.style.display = 'none';
+      };
   })
 
 
@@ -121,6 +125,98 @@ export default function UserForm(props) {
   }
 
 
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && user
+    && user !== 404) {
+      document.getElementById('username').value = user.username;
+      if (profName) {
+        document.getElementById('prof-name').value = profName;
+        document.getElementById('description').value = profDesc;
+      };
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let errors = [];
+    let data = new FormData(document.querySelector('form'));
+    for (let [key, value] of data) {
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    if (data.get('username').length < 4) {
+      errors.push('username should consist at least 4 chars');
+    };
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      if (user) {
+        let url = 'http://127.0.0.1:8000/api/v1/user/' + user.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/user/update');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else {
+        let url = 'http://127.0.0.1:8000/api/v1/user';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            navigate('/user/update');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      };
+    };
+  }
+
+
+  function passwordChanger () {
+    let password = document.getElementById('password').value;
+    let url = 'http://127.0.0.1:8000/api/v1/password/' + user.id;
+    let options = {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({
+        password: password,
+      }),
+    };
+    fetch(url, options).then(res => {
+      if (res.status === 204) {
+        navigate('/user/update');
+      } else {
+        console.log('error');
+      };
+    }).catch(error => console.log(error.message));
+  }
+
+
   if (props.user) {
     if (props.user.is_superuser) {
       if (user === 404) {
@@ -129,42 +225,33 @@ export default function UserForm(props) {
         return (
           <div>
           <p>Изменение учётной записи</p>
-          <form onReset={resetHandler}>
+          <form onReset={resetHandler} onSubmit={sendForm} encType="multipart/form-data">
             <p>Имя пользователя: 
-              <input type='text' id='username' 
-              value={user.username} />
+              <input type='text' name='username' id='username' />
             </p>
-            <p id='password-btn'>Пароль:
-              <button onClick={showInput}>Сменить пароль</button>
-            </p>
-            <p id='password-input'>Пароль:
-              <input type='text' id='password' />
-            </p>
-            <p>Тип учётной записи:
-              <select onChange={selectHandler}>
+            <p style={{ display: 'block'}}>Тип учётной записи:
+              <select onChange={selectHandler} name='user-type'>
                 <option>{user.type}</option>
                 { tags.filter(item => item !== user.type)
                 .map((item, index) => <option key={index}>{item}</option>) }
               </select>
             </p>
             <p id='p-name'>Название в профиле:
-              <input type='text' id='prof-name' 
-              value={profName} />
+              <input type='text' name='prof-name' id='prof-name' />
             </p>
             <p id='p-desc'>Описание в профиле:
-              <input type='text' id='description' 
-              value={profDesc} />
+              <input type='text' name='description' id='description' />
             </p>
             <p>
               { user.is_superuser && (
               <label>
                 Права администратора
-                <input type='checkbox' id='admin-cb' />
+                <input type='checkbox' name='admin-cb' id='admin-cb' />
               </label>) }
               { !user.is_superuser && (
               <label>
                 Права администратора
-                <input type='checkbox' id='admin-cb' 
+                <input type='checkbox' name='admin-cb' id='admin-cb' 
                 onChange={checkboxWarning} />
               </label>) }
             </p>
@@ -180,39 +267,46 @@ export default function UserForm(props) {
             </div>
             <p>
               <input type='submit' value='Отправить' />
-              <input type='reset' value='Сброс' />
+              <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
             </p>
           </form>
+          <p id='password-btn'>Пароль:
+            <button onClick={showInput}>Сменить пароль</button>
+          </p>
+          <p id='password-input'>Пароль:
+            <input type='text' name='password' id='password' />
+            <button onClick={passwordChanger}>Отправить</button>
+          </p>
         </div>
         )
       } else {
         return (
         <div>
           <p>Создание новой учётной записи</p>
-          <form onReset={resetHandler}>
+          <form onReset={resetHandler} onSubmit={sendForm} encType="multipart/form-data">
             <p>Имя пользователя: 
-              <input type='text' id='username' />
+              <input type='text' name='username' id='username' />
             </p>
             <p>Пароль:
-              <input type='text' id='password' />
+              <input type='text' name='password' id='password' />
             </p>
             <p>Тип учётной записи:
-              <select onChange={selectHandler}>
+              <select onChange={selectHandler} name='user-type'>
                 <option>Представитель производителя</option>
                 <option>Сервисная организация</option>
                 <option>Конечный клиент</option>
               </select>
             </p>
             <p id='p-name'>Название в профиле:
-              <input type='text' id='prof-name' />
+              <input type='text' name='prof-name' id='prof-name' />
             </p>
             <p id='p-desc'>Описание в профиле:
-              <input type='text' id='description' />
+              <input type='text' name='description' id='description' />
             </p>
             <p>
               <label>
                 Права администратора
-                <input type='checkbox' id='admin-cb' 
+                <input type='checkbox' name='admin-cb' id='admin-cb' 
                 onChange={checkboxWarning} />
               </label>
             </p>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function DirectoryForm(props) {
   let [instance, setInstance] = useState();
+  let navigate = useNavigate();
   let units = [
     'Модель техники',
     'Модель двигателя',
@@ -73,18 +75,94 @@ export default function DirectoryForm(props) {
 
   function sendForm (e) {
     e.preventDefault();
-    let data = new FormData(document.querySelector('form'))
+    let errors = [];
+    let data = new FormData(document.querySelector('form'));
     data.delete('dir-type');
     if (!instance) {
       if (document.getElementById('unit-radio').checked) {
         data.delete('repair');
       } else {
         data.delete('unit');
-      }
-    }
+      };
+    };
     for (let [key, value] of data) {
-      console.log(`${key} - ${value}`);
-    }
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    console.log(errors);
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      if (instance && props.type === 'unit') {
+        let url = 'http://127.0.0.1:8000/api/v1/unit/' + instance.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/unit/' + instance.id);
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else if (instance && props.type === 'repair') {
+        let url = 'http://127.0.0.1:8000/api/v1/repair/' + instance.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/repair/' + instance.id);
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else if (!instance && data.has('unit')) {
+        let url = 'http://127.0.0.1:8000/api/v1/units';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            return res.json();
+          } else {
+            console.log('error');
+          };
+        }).then(result => navigate('/unit/' + result.id))
+        .catch(error => console.log(error.message));
+      } else {
+        let url = 'http://127.0.0.1:8000/api/v1/repairs';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            return res.json();
+          } else {
+            console.log('error');
+          };
+        }).then(result => navigate('/repair/' + result.id))
+        .catch(error => console.log(error.message));
+      };
+    };
   }
 
 
@@ -92,7 +170,7 @@ export default function DirectoryForm(props) {
     return <NotFoundPage />
   } else if (instance && instance !== 404) {
     return (
-    <form onSubmit={sendForm}>
+    <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Редактирование справочника</p>
       { props.type === 'unit' && <p>Справочник агрегатов</p> }
       { props.type === 'repair' && <p>Справочник по обслуживанию</p> }
@@ -120,7 +198,7 @@ export default function DirectoryForm(props) {
     )
   } else {
     return (
-    <form onSubmit={sendForm}>
+    <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Создание нового справочника</p>
       <p>Назначение:
         <label>

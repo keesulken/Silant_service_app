@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserProfileForm(props) {
   let [instance, setInstance] = useState(null);
+  let navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -35,10 +37,52 @@ export default function UserProfileForm(props) {
 
   function sendForm (e) {
     e.preventDefault();
+    let errors = [];
     let data = new FormData(document.querySelector('form'))
     for (let [key, value] of data) {
-      console.log(`${key} - ${value}`);
-    }
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    console.log(errors);
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      if (instance && props.type === 'client') {
+        let url = 'http://127.0.0.1:8000/api/v1/client/' + instance.pk;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/client/' + instance.pk);
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else if (instance && props.type === 'company') {
+        let url = 'http://127.0.0.1:8000/api/v1/company/' + instance.pk;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/company/' + instance.pk);
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      };
+    };
   }
 
 

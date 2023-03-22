@@ -112,13 +112,13 @@ class Machine(models.Model):
     machine_model = models.ForeignKey(
         MachineDirectory,
         related_name='machine_models',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Модель техники'
     )
     engine_model = models.ForeignKey(
         MachineDirectory,
         related_name='engines',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Модель двигателя'
     )
     engine_number = models.CharField(max_length=255,
@@ -126,7 +126,7 @@ class Machine(models.Model):
     transmission_model = models.ForeignKey(
         MachineDirectory,
         related_name='transmissions',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Модель трансмиссии'
     )
     transmission_number = models.CharField(max_length=255,
@@ -134,7 +134,7 @@ class Machine(models.Model):
     drive_axle_model = models.ForeignKey(
         MachineDirectory,
         related_name='drive_axles',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Модель ведущего моста'
     )
     drive_axle_number = models.CharField(max_length=255,
@@ -142,7 +142,7 @@ class Machine(models.Model):
     steered_axle_model = models.ForeignKey(
         MachineDirectory,
         related_name='steered_axles',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Модель управляемого моста'
     )
     steered_axle_number = models.CharField(max_length=255,
@@ -158,7 +158,7 @@ class Machine(models.Model):
     client = models.ForeignKey(
         ClientProfile,
         related_name='machines_in_use',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
         verbose_name='Клиент'
@@ -166,7 +166,7 @@ class Machine(models.Model):
     service_company = models.ForeignKey(
         ServiceCompanyProfile,
         related_name='maintain_units',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
         verbose_name='Сервисная компания'
@@ -184,7 +184,7 @@ class Maintenance(models.Model):
     type = models.ForeignKey(
         RepairDirectory,
         related_name='types',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Вид ТО'
     )
     date = models.DateField(verbose_name='Дата проведения ТО')
@@ -195,7 +195,7 @@ class Maintenance(models.Model):
     maintenance_holder = models.ForeignKey(
         RepairDirectory,
         related_name='holders',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Организация, проводившая ТО'
     )
     machine = models.ForeignKey(
@@ -207,7 +207,7 @@ class Maintenance(models.Model):
     service_company = models.ForeignKey(
         ServiceCompanyProfile,
         related_name='maintenances',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Сервисная компания'
     )
 
@@ -225,14 +225,14 @@ class Reclamation(models.Model):
     unit = models.ForeignKey(
         RepairDirectory,
         related_name='units',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Узел отказа'
     )
     description = models.TextField(verbose_name='Описание отказа')
     repair_method = models.ForeignKey(
         RepairDirectory,
         related_name='methods',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Способ восстановления'
     )
     spare_parts = models.TextField(verbose_name='Используемые запасные части')
@@ -247,7 +247,7 @@ class Reclamation(models.Model):
     service_company = models.ForeignKey(
         ServiceCompanyProfile,
         related_name='reclamations',
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
         verbose_name='Сервисная компания'
     )
 

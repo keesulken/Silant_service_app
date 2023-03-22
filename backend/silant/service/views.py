@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import ProtectedError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,6 +24,90 @@ class UserAPIView(APIView):
             user = User.objects.all()
             data = UserSerializer(user, many=True).data
             return Response(data)
+
+    def post(self, request, **kwargs):
+        if kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            user = User()
+            user.username = request.data['username']
+            user.set_password(request.data['password'])
+            for i in USER_TYPES:
+                if i[1] == request.data['user-type']:
+                    user.type = i[0]
+            if request.data.__contains__('admin-cb'):
+                user.is_superuser = True
+            user.save()
+            if user.type == 'MNU':
+                client = ClientProfile()
+                client.user = user
+                client.name = request.data['prof-name']
+                client.description = request.data['description']
+                client.save()
+                return Response({'id': client.pk}, status=status.HTTP_201_CREATED)
+            elif user.type == 'SVC':
+                company = ServiceCompanyProfile()
+                company.user = user
+                company.name = request.data['prof-name']
+                company.description = request.data['description']
+                company.save()
+                return Response({'id': company.pk}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_201_CREATED)
+
+    def patch(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            user = User.objects.get(pk=kwargs['id'])
+            current_type = user.get_type_display()
+            user.username = request.data['username']
+            for i in USER_TYPES:
+                if i[1] == request.data['user-type']:
+                    user.type = i[0]
+                    break
+            if request.data.__contains__('admin-cb'):
+                user.is_superuser = True
+            else:
+                user.is_superuser = False
+            if current_type == request.data['user-type']:
+                user.save()
+                if user.cl_profile.exists():
+                    profile = user.cl_profile.first()
+                    profile.name = request.data['prof-name']
+                    profile.description = request.data['description']
+                    profile.save()
+                elif user.sc_profile.exists():
+                    profile = user.sc_profile.first()
+                    profile.name = request.data['prof-name']
+                    profile.description = request.data['description']
+                    profile.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                try:
+                    if user.cl_profile.exists():
+                        user.cl_profile.first().delete()
+                    elif user.sc_profile.exists():
+                        user.sc_profile.first().delete()
+                    if user.type == 'MFR':
+                        user.save()
+                    elif user.type == 'SVC':
+                        user.save()
+                        profile = ServiceCompanyProfile()
+                        profile.user = user
+                        profile.name = request.data['prof-name']
+                        profile.description = request.data['description']
+                        profile.save()
+                    else:
+                        user.save()
+                        profile = ClientProfile()
+                        profile.user = user
+                        profile.name = request.data['prof-name']
+                        profile.description = request.data['description']
+                        profile.save()
+                    return Response(status=status.HTTP_204_NO_CONTENT)
+                except ProtectedError:
+                    return Response({'error': 'protected objects'}, status=status.HTTP_200_OK)
 
 
 class MachineAPIView(APIView):
@@ -197,7 +282,7 @@ class UnitAPIView(APIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
-            items = MachineDirectory.objects.all()
+            items = MachineDirectory.objects.all().order_by('type')
             data = MachineDirectoryFormSerializer(items, many=True).data
             return Response(data)
 
@@ -206,7 +291,10 @@ class UnitAPIView(APIView):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
             unit = MachineDirectory()
-            unit.type = request.data['type']
+            for i in MACHINE_DIRECTORY_CHOICES:
+                if i[1] == request.data['unit']:
+                    unit.type = i[0]
+                    break
             unit.name = request.data['name']
             unit.description = request.data['description']
             unit.save()
@@ -217,7 +305,10 @@ class UnitAPIView(APIView):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
             unit = MachineDirectory.objects.get(pk=kwargs['id'])
-            unit.type = request.data['type']
+            for i in MACHINE_DIRECTORY_CHOICES:
+                if i[1] == request.data['type']:
+                    unit.type = i[0]
+                    break
             unit.name = request.data['name']
             unit.description = request.data['description']
             unit.save()
@@ -242,7 +333,7 @@ class RepairAPIView(APIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
-            items = RepairDirectory.objects.all()
+            items = RepairDirectory.objects.all().order_by('type')
             data = RepairDirectoryFormSerializer(items, many=True).data
             return Response(data)
 
@@ -250,8 +341,11 @@ class RepairAPIView(APIView):
         if kwargs:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
-            repair = RepairDirectory
-            repair.type = request.data['type']
+            repair = RepairDirectory()
+            for i in REPAIR_DIRECTORY_CHOICES:
+                if i[1] == request.data['repair']:
+                    repair.type = i[0]
+                    break
             repair.name = request.data['name']
             repair.description = request.data['description']
             repair.save()
@@ -262,7 +356,10 @@ class RepairAPIView(APIView):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
             repair = RepairDirectory.objects.get(pk=kwargs['id'])
-            repair.type = request.data['type']
+            for i in REPAIR_DIRECTORY_CHOICES:
+                if i[1] == request.data['type']:
+                    repair.type = i[0]
+                    break
             repair.name = request.data['name']
             repair.description = request.data['description']
             repair.save()
@@ -450,12 +547,20 @@ class ReclamationAPIView(APIView):
 class DirectoryListAPIView(APIView):
     def get(self, request, **kwargs):
         if kwargs['instance'] == 'units':
-            items = MachineDirectory.objects.all()
+            items = MachineDirectory.objects.all().order_by('type')
             data = MachineDirectorySerializer(items, many=True).data
             return Response(data)
         elif kwargs['instance'] == 'repairs':
-            items = RepairDirectory.objects.all()
+            items = RepairDirectory.objects.all().order_by('type')
             data = RepairDirectorySerializer(items, many=True).data
             return Response(data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class PasswordAPIView(APIView):
+    def post(self, request, **kwargs):
+        user = User.objects.get(pk=kwargs['id'])
+        user.set_password(request.data['password'])
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
