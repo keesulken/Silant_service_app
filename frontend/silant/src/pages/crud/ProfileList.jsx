@@ -50,7 +50,7 @@ export default function ProfileList() {
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('client', item.id, e)}
+                <td><button onClick={(e) => updateHolder('client', item.pk, e)}
                 >Изменить</button></td>
               </tr>
             )) }
@@ -77,7 +77,7 @@ export default function ProfileList() {
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('company', item.id, e)}
+                <td><button onClick={(e) => updateHolder('company', item.pk, e)}
                 >Изменить</button></td>
               </tr>
             )) }

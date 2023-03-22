@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function MachineForm(props) {
   let [instance, setInstance] = useState();
   let [units, setUnits] = useState();
   let [clients, setClients] = useState();
   let [companies, setCompanies] = useState();
+  let navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -65,10 +67,57 @@ export default function MachineForm(props) {
 
   function sendForm (e) {
     e.preventDefault();
+    let errors = [];
+    let now = new Date();
     let data = new FormData(document.querySelector('form'))
     for (let [key, value] of data) {
-      console.log(`${key} - ${value}`);
-    }
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    if (now - new Date(data.get('dispatch')) < 0 ) {
+      errors.push('invalid date');
+    };
+    console.log(errors);
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      if (instance) {
+        let url = 'http://127.0.0.1:8000/api/v1/machine/' + instance.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/machine/' + instance.id);
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else {
+        let url = 'http://127.0.0.1:8000/api/v1/machine';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            return res.json();
+          } else {
+            console.log('error');
+          };
+        }).then(result => navigate('/machine/' + result.id))
+        .catch(error => console.log(error.message));
+      };
+    };
   }
 
 
@@ -78,7 +127,7 @@ export default function MachineForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm}>
+      <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Редактирование записи о машине</p>
       <p>Зав. № машины: <input type='text' name='serial' 
       id='serial' /></p>
@@ -147,21 +196,31 @@ export default function MachineForm(props) {
       id='equipment' /></p>
       <p>Клиент: 
         <select name='client'>
-          <option>{ instance.client.name }</option>
-          { clients.filter(client => 
+          { instance.client && <option>{ instance.client.name }</option> }
+          { instance.client && clients.filter(client => 
           client.name !== instance.client.name).map(client => (
           <option key={client.pk}>{ client.name }</option>)) }
-          <option>-----</option>
+          { instance.client && <option>-----</option> }
+          { !instance.client && <option>-----</option> }
+          { !instance.client &&  clients.map(client => (
+            <option key={client.pk}>{ client.name }</option>
+          )) }
         </select>
       </p>
       <p>Сервисная компания: 
         <select name='company'>
-          <option>{ instance.service_company.name }</option>
-          { companies.filter(company => 
+          { instance.service_company && 
+          <option>{ instance.service_company.name }</option> }
+          { instance.service_company && 
+          companies.filter(company => 
           company.name !== instance.service_company.name)
           .map(company => (
           <option key={company.pk}>{ company.name }</option>)) }
-          <option>-----</option>
+          { instance.service_company && <option>-----</option> }
+          { !instance.service_company && <option>-----</option> }
+          { !instance.service_company && companies.map(company => (
+            <option key={company.pk}>{ company.name }</option>
+          )) }
         </select>
       </p>
       <p>
@@ -175,7 +234,7 @@ export default function MachineForm(props) {
     
     
     return (
-    <form onSubmit={sendForm}>
+    <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Создание новой записи о машине</p>
       <p>Зав. № машины: <input type='text' name='serial' ></input></p>
       <p>Модель техники: 

@@ -55,6 +55,6 @@ export default function AuthReclamation(props) {
       </div>
     )
   } else {
-    return (<div id={id}>No data</div>)
+    return (<div id={id}>Рекламации по данной технике отсутствуют</div>)
   }
 }

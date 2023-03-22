@@ -57,10 +57,13 @@ export default function MachineList() {
                 <td>{ item.consignee }</td>
                 <td>{ item.delivery_address }</td>
                 <td>{ item.equipment }</td>
-                <td><Link to={'/client/' + item.client.pk}
-                >{ item.client.name }</Link></td>
+                { item.client && <td><Link to={'/client/' + item.client.pk}
+                >{ item.client.name }</Link></td> }
+                { !item.client && <td>---</td> }
+                { item.service_company && 
                 <td><Link to={'/company/' + item.service_company.pk}
-                >{ item.service_company.name }</Link></td>
+                >{ item.service_company.name }</Link></td> }
+                { !item.service_company && <td>---</td> }
                 <td><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
                 <td><button>Удалить</button></td>
               </tr>

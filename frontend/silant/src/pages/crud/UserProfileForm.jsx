@@ -20,22 +20,44 @@ export default function UserProfileForm(props) {
   }, [])
 
 
+  function dataLoader () {
+    if (document.querySelector('form') 
+    && instance
+    && instance !== 404) {
+      document.getElementById('name').value = instance.name;
+      document.getElementById('description').value = instance.description;
+    };
+  }
+
+
+  useEffect(dataLoader)
+
+
+  function sendForm (e) {
+    e.preventDefault();
+    let data = new FormData(document.querySelector('form'))
+    for (let [key, value] of data) {
+      console.log(`${key} - ${value}`);
+    }
+  }
+
+
   if (instance === 404) {
     return <NotFoundPage />
   } else if (instance && instance !== 404) {
     return (
-      <form>
+      <form onSubmit={sendForm}>
         { props.type === 'client' && <p>Карточка клиента</p> }
         { props.type === 'company' && <p>Карточка сервисной компании</p> }
         <p>Название: 
-          <input type='text' id='name' value={instance.name}></input>
+          <input type='text' name='name' id='name' ></input>
         </p>
         <p>Описание: 
-          <input type='text' id='description' value={instance.description}></input>
+          <input type='text' name='description' id='description' ></input>
         </p>
         <p>
-          <input type='submit' value='Отправить'></input>
-          <input type='reset' value='Сброс'></input>
+          <input type='submit' value='Отправить' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
         </p>
       </form>
     )

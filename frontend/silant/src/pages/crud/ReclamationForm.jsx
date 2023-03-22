@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function ReclamationForm(props) {
   let [instance, setInstance] = useState();
@@ -8,6 +9,7 @@ export default function ReclamationForm(props) {
   let [companies, setCompanies] = useState();
   let downtime;
   let dt = document.getElementById('downtime-p');
+  let navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -55,6 +57,9 @@ export default function ReclamationForm(props) {
       document.getElementById('rl-description').value = instance.description;
       document.getElementById('rl-parts').value = instance.spare_parts;
       document.getElementById('recovery-date').value = instance.recovery_date;
+      if (dt) {
+        dt.textContent = instance.downtime;
+      };
     };
   }
 
@@ -65,18 +70,73 @@ export default function ReclamationForm(props) {
   function countDowntime () {
     let rejection = new Date(document.getElementById('rl-date').value);
     let recovery = new Date(document.getElementById('recovery-date').value);
-    downtime = (recovery - rejection) / 86400000;
+    let result = (recovery - rejection) / 86400000;
+    downtime = Number.isInteger(result) ? result : null;
     dt.textContent = downtime;
   }
 
 
   function sendForm (e) {
     e.preventDefault();
+    let isNumber = n => !isNaN(n);
+    let errors = [];
+    let now = new Date();
     let data = new FormData(document.querySelector('form'));
-    data.append('downtime', downtime);
+    data.append('downtime', dt.textContent);
     for (let [key, value] of data) {
-      console.log(`${key} - ${value}`);
-    }
+      if (value === '') {
+        errors.push('All fields required');
+        break;
+      };
+    };
+    if ((now - new Date(data.get('rl-date')) < 0) || 
+    (now - new Date(data.get('rejection-date')) < 0) ) {
+      errors.push('invalid date');
+    };
+    if (Number(data.get('downtime')) < 0) {
+      errors.push('Downtime is incorrect');
+    };
+    if (!isNumber(data.get('operating'))) {
+      errors.push('Operating time is not number');
+    };
+    console.log(errors);
+    if (errors.length !== 0) {
+      console.log('error');
+    } else {
+      if (instance) {
+        let url = 'http://127.0.0.1:8000/api/v1/reclamation/' + instance.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/update/reclamation');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else {
+        let url = 'http://127.0.0.1:8000/api/v1/reclamations';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            navigate('/update/reclamation');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      };
+    };
   }
 
 
@@ -86,7 +146,7 @@ export default function ReclamationForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm}>
+      <form onSubmit={sendForm} encType="multipart/form-data">
         <p>Редактирование рекламации</p>
         <p>Дата отказа: 
           <input type='date' name='rl-date'
@@ -153,10 +213,11 @@ export default function ReclamationForm(props) {
     
     
     return (
-      <form onSubmit={sendForm}>
+      <form onSubmit={sendForm} encType="multipart/form-data">
         <p>Создание новой рекламации</p>
         <p>Дата отказа: 
-          <input type='date' name='rl-date' id='rl-date' />
+          <input type='date' name='rl-date' id='rl-date' 
+          onChange={countDowntime} />
         </p>
         <p>Наработка: 
           <input type='text' name='operating' id='operating' />
@@ -182,9 +243,10 @@ export default function ReclamationForm(props) {
           <input type='text' name='rl-parts' id='rl-parts' />
         </p>
         <p>Дата восстановления: 
-          <input type='date' name='recovery-date' id='recovery-date' />
+          <input type='date' name='recovery-date' id='recovery-date' 
+          onChange={countDowntime} />
         </p>
-        <p>Время простоя техники: </p>
+        <p>Время простоя техники: <b id='downtime-p'>{ downtime }</b></p>
         <p>Машина: 
           <select name='machine'>
             { machines.map(item => 

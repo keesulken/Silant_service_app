@@ -64,11 +64,11 @@ export default function Machine(props) {
     return (
       <div>
         <SingleObjTitle machine={machine} />
-        <p>Info about your machine</p>
+        <p>Информация о вашей технике</p>
         <p>
-            <button id='machine-table' onClick={handleClick}>main info</button>
-            <button id='maintenance-table' onClick={handleClick}>maintenance</button>
-            <button id='reclamation-table' onClick={handleClick}>reclamation</button>
+            <button id='machine-table' onClick={handleClick}>Общая инфо</button>
+            <button id='maintenance-table' onClick={handleClick}>ТО</button>
+            <button id='reclamation-table' onClick={handleClick}>Рекламации</button>
         </p>
         <SingleMachine machine={machine} style={machineStyle} />
         <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />

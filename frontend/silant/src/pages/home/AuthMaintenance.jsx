@@ -51,6 +51,6 @@ export default function AuthMaintenance(props) {
       </div>
     )
   } else {
-    return (<div id={id}>No data</div>)
+    return (<div id={id}>ТО ещё не проводилось</div>)
   }
 }

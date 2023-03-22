@@ -68,8 +68,10 @@ class MachineAPIView(APIView):
             machine.consignee = request.data['consignee']
             machine.delivery_address = request.data['address']
             machine.equipment = request.data['equipment']
-            machine.client = ClientProfile.objects.get(name=request.data['client'])
-            machine.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
+            if request.data['client'] != '-----':
+                machine.client = ClientProfile.objects.get(name=request.data['client'])
+            if request.data['company'] != '-----':
+                machine.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
             machine.save()
             return Response({'id': machine.pk}, status=status.HTTP_201_CREATED)
 
@@ -93,8 +95,14 @@ class MachineAPIView(APIView):
             machine.consignee = request.data['consignee']
             machine.delivery_address = request.data['address']
             machine.equipment = request.data['equipment']
-            machine.client = ClientProfile.objects.get(name=request.data['client'])
-            machine.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
+            if request.data['client'] != '-----':
+                machine.client = ClientProfile.objects.get(name=request.data['client'])
+            else:
+                machine.client = None
+            if request.data['company'] != '-----':
+                machine.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
+            else:
+                machine.service_company = None
             machine.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -193,6 +201,36 @@ class UnitAPIView(APIView):
             data = MachineDirectoryFormSerializer(items, many=True).data
             return Response(data)
 
+    def post(self, request, **kwargs):
+        if kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            unit = MachineDirectory()
+            unit.type = request.data['type']
+            unit.name = request.data['name']
+            unit.description = request.data['description']
+            unit.save()
+            return Response({'id': unit.pk}, status=status.HTTP_201_CREATED)
+
+    def patch(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            unit = MachineDirectory.objects.get(pk=kwargs['id'])
+            unit.type = request.data['type']
+            unit.name = request.data['name']
+            unit.description = request.data['description']
+            unit.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            unit = MachineDirectory.objects.get(pk=kwargs['id'])
+            unit.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class RepairAPIView(APIView):
     def get(self, request, **kwargs):
@@ -207,6 +245,36 @@ class RepairAPIView(APIView):
             items = RepairDirectory.objects.all()
             data = RepairDirectoryFormSerializer(items, many=True).data
             return Response(data)
+
+    def post(self, request, **kwargs):
+        if kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            repair = RepairDirectory
+            repair.type = request.data['type']
+            repair.name = request.data['name']
+            repair.description = request.data['description']
+            repair.save()
+            return Response({'id': repair.pk}, status=status.HTTP_201_CREATED)
+
+    def patch(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            repair = RepairDirectory.objects.get(pk=kwargs['id'])
+            repair.type = request.data['type']
+            repair.name = request.data['name']
+            repair.description = request.data['description']
+            repair.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            repair = RepairDirectory.objects.get(pk=kwargs['id'])
+            repair.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ClientAPIView(APIView):
@@ -223,6 +291,16 @@ class ClientAPIView(APIView):
             data = ClientProfileSerializer(clients, many=True).data
             return Response(data)
 
+    def patch(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            client = ClientProfile.objects.get(pk=kwargs['id'])
+            client.name = request.data['name']
+            client.description = request.data['description']
+            client.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CompanyAPIView(APIView):
     def get(self, request, **kwargs):
@@ -237,6 +315,16 @@ class CompanyAPIView(APIView):
             companies = ServiceCompanyProfile.objects.all()
             data = ServiceCompanyProfileSerializer(companies, many=True).data
             return Response(data)
+
+    def patch(self, request, **kwargs):
+        if not kwargs:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            company = ServiceCompanyProfile.objects.get(pk=kwargs['id'])
+            company.name = request.data['name']
+            company.description = request.data['description']
+            company.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MaintenanceAPIView(APIView):
@@ -261,7 +349,7 @@ class MaintenanceAPIView(APIView):
             maintenance.type = RepairDirectory.objects.get(name=request.data['mt-type'])
             maintenance.date = request.data['mt-date']
             maintenance.operating_time = request.data['mt-time']
-            maintenance.work_order_number = request.data['work-order-number']
+            maintenance.work_order_number = request.data['work-order-num']
             maintenance.work_order_date = request.data['work-order-date']
             maintenance.maintenance_holder = RepairDirectory.objects.get(name=request.data['mt-holder'])
             maintenance.machine = Machine.objects.get(factory_number=request.data['machine'])
@@ -273,25 +361,31 @@ class MaintenanceAPIView(APIView):
         if not kwargs:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
-            maintenance = Maintenance.objects.get(pk=kwargs['id'])
-            maintenance.type = RepairDirectory.objects.get(name=request.data['mt-type'])
-            maintenance.date = request.data['mt-date']
-            maintenance.operating_time = request.data['mt-time']
-            maintenance.work_order_number = request.data['work-order-number']
-            maintenance.work_order_date = request.data['work-order-date']
-            maintenance.maintenance_holder = RepairDirectory.objects.get(name=request.data['mt-holder'])
-            maintenance.machine = Machine.objects.get(factory_number=request.data['machine'])
-            maintenance.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
-            maintenance.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            try:
+                maintenance = Maintenance.objects.get(pk=kwargs['id'])
+                maintenance.type = RepairDirectory.objects.get(name=request.data['mt-type'])
+                maintenance.date = request.data['mt-date']
+                maintenance.operating_time = request.data['mt-time']
+                maintenance.work_order_number = request.data['work-order-num']
+                maintenance.work_order_date = request.data['work-order-date']
+                maintenance.maintenance_holder = RepairDirectory.objects.get(name=request.data['mt-holder'])
+                maintenance.machine = Machine.objects.get(factory_number=request.data['machine'])
+                maintenance.service_company = ServiceCompanyProfile.objects.get(name=request.data['company'])
+                maintenance.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, **kwargs):
         if not kwargs:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
-            maintenance = Maintenance.objects.get(pk=kwargs['id'])
-            maintenance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            try:
+                maintenance = Maintenance.objects.get(pk=kwargs['id'])
+                maintenance.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class ReclamationAPIView(APIView):
@@ -330,7 +424,7 @@ class ReclamationAPIView(APIView):
         if not kwargs:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         else:
-            reclamation = Reclamation.objects.get(kwargs['id'])
+            reclamation = Reclamation.objects.get(pk=kwargs['id'])
             reclamation.rejection_date = request.data['rl-date']
             reclamation.operating_time = request.data['operating']
             reclamation.unit = RepairDirectory.objects.get(name=request.data['rl-unit'])

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
+import { useNavigate } from 'react-router-dom';
 
 export default function MaintenanceForm(props) {
   let [instance, setInstance] = useState();
   let [repairs, setRepairs] = useState();
   let [machines, setMachines] = useState();
   let [companies, setCompanies] = useState();
+  let navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -78,7 +80,39 @@ export default function MaintenanceForm(props) {
     if (errors.length !== 0) {
       console.log('error');
     } else {
-      
+      if (instance) {
+        let url = 'http://127.0.0.1:8000/api/v1/maintenance/' + instance.id;
+        let options = {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 204) {
+            navigate('/update/maintenance');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      } else {
+        let url = 'http://127.0.0.1:8000/api/v1/maintenances';
+        let options = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+          body: data,
+        };
+        fetch(url, options).then(res => {
+          if (res.status === 201) {
+            navigate('/update/maintenance');
+          } else {
+            console.log('error');
+          };
+        }).catch(error => console.log(error.message));
+      };
     };
   }
 
@@ -89,7 +123,7 @@ export default function MaintenanceForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm}>
+      <form onSubmit={sendForm} encType="multipart/form-data">
         <p>Редактирование данных о ТО</p>
         <p>Вид ТО:
           <select name='mt-type'>
@@ -152,7 +186,7 @@ export default function MaintenanceForm(props) {
     
     
     return (
-      <form onSubmit={sendForm}>
+      <form onSubmit={sendForm} encType="multipart/form-data">
         <p>Создание новой записи ТО</p>
         <p>Вид ТО:
           <select name='mt-type'>
