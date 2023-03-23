@@ -13,7 +13,13 @@ export default function MachineForm(props) {
   useEffect(()=>{
     if (props.id) {
       let url = 'http://127.0.0.1:8000/api/v1/search/' + props.id;
-      fetch(url).then(res => {
+      let options = {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${localStorage.getItem('token')}`,
+        },
+      };
+      fetch(url, options).then(res => {
         if (res.status === 200) {
           return res.json();
         } else if (res.status === 404) {
@@ -31,10 +37,16 @@ export default function MachineForm(props) {
     let unitsURL = 'http://127.0.0.1:8000/api/v1/units';
     let clientsURL = 'http://127.0.0.1:8000/api/v1/clients';
     let companiesURL = 'http://127.0.0.1:8000/api/v1/companies';
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
     Promise.all([
-      fetch(unitsURL).then(res => res.json()),
-      fetch(clientsURL).then(res => res.json()),
-      fetch(companiesURL).then(res => res.json()),
+      fetch(unitsURL, options).then(res => res.json()),
+      fetch(clientsURL, options).then(res => res.json()),
+      fetch(companiesURL, options).then(res => res.json()),
     ]).then(result => {
       setUnits(result[0]);
       setClients(result[1]);

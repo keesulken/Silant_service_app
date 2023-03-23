@@ -13,7 +13,13 @@ export default function MaintenanceForm(props) {
   useEffect(()=>{
     if (props.id) {
       let url = 'http://127.0.0.1:8000/api/v1/maintenance/' + props.id;
-      fetch(url).then(res => {
+      let options = {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${localStorage.getItem('token')}`,
+        },
+      };
+      fetch(url, options).then(res => {
         if (res.status === 200) {
           return res.json();
         } else if (res.status === 404) {
@@ -31,10 +37,16 @@ export default function MaintenanceForm(props) {
     let repairsURL = 'http://127.0.0.1:8000/api/v1/repairs';
     let machinesURL = 'http://127.0.0.1:8000/api/v1/machines';
     let companiesURL = 'http://127.0.0.1:8000/api/v1/companies';
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
     Promise.all([
-      fetch(repairsURL).then(res => res.json()),
-      fetch(machinesURL).then(res => res.json()),
-      fetch(companiesURL).then(res => res.json()),
+      fetch(repairsURL, options).then(res => res.json()),
+      fetch(machinesURL, options).then(res => res.json()),
+      fetch(companiesURL, options).then(res => res.json()),
     ]).then(result => {
       setRepairs(result[0]);
       setMachines(result[1]);

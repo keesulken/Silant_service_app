@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import DeleteBlock from './DeleteBlock';
 
 export default function MaintenanceList() {
   let [maintenance, setMaintenance] = useState();
@@ -7,7 +8,13 @@ export default function MaintenanceList() {
 
   useEffect(()=>{
     let url = 'http://127.0.0.1:8000/api/v1/maintenances';
-    fetch(url).then(res => {
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
+    fetch(url, options).then(res => {
       if (res.status === 200) {
         return res.json();
       } else {
@@ -21,6 +28,18 @@ export default function MaintenanceList() {
   function updateHolder (id) {
     navigate(`/update/maintenance/${id}`)
   }
+
+
+  function deleteHolder (id, instance, name) {
+    let oldDeleteBlock = document.getElementById('delete-block');
+    if (oldDeleteBlock) {
+      oldDeleteBlock.remove();
+    };
+    let table = document.querySelector('table');
+    let deleteBlock = () => <DeleteBlock id={id} instance={instance} name={name} />;
+    table.insertAdjacentElement('beforebegin', deleteBlock);
+  }
+
 
   if (!maintenance) {
     return <div>No data</div>
@@ -59,7 +78,9 @@ export default function MaintenanceList() {
                 <td><Link to={'/company/' + item.service_company.pk}
                 >{ item.service_company.name }</Link></td>
                 <td><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
-                <td><button>Удалить</button></td>
+                <td><button onClick={(e) => 
+                deleteHolder(item.id, 'maintenance', `${item.type.name} от ${item.date}`, e)}
+                >Удалить</button></td>
               </tr>
             )) }
           </tbody>

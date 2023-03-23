@@ -10,9 +10,15 @@ export default function ProfileList() {
   useEffect(()=>{
     let clientURL = 'http://127.0.0.1:8000/api/v1/clients';
     let companyURL = 'http://127.0.0.1:8000/api/v1/companies';
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
     Promise.all([
-      fetch(clientURL).then(res => res.json()),
-      fetch(companyURL).then(res => res.json()),
+      fetch(clientURL, options).then(res => res.json()),
+      fetch(companyURL, options).then(res => res.json()),
     ]).then(result => {
       setClients(result[0]);
       setCompanies(result[1]);

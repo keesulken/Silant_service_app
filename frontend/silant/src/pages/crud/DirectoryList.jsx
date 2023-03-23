@@ -10,9 +10,15 @@ export default function DirectoryList() {
   useEffect(()=> {
     let unitURL = 'http://127.0.0.1:8000/api/v1/directory/units';
     let repairURL = 'http://127.0.0.1:8000/api/v1/directory/repairs';
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
     Promise.all([
-      fetch(unitURL).then(res => res.json()),
-      fetch(repairURL).then(res => res.json()),
+      fetch(unitURL, options).then(res => res.json()),
+      fetch(repairURL, options).then(res => res.json()),
     ]).then(result => {
       setUnits(result[0]);
       setRepairs(result[1]);

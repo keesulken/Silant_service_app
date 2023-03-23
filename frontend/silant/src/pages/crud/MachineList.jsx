@@ -7,7 +7,13 @@ export default function MachineList() {
 
   useEffect(()=>{
     let url = 'http://127.0.0.1:8000/api/v1/machines';
-    fetch(url).then(res => {
+    let options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+    };
+    fetch(url, options).then(res => {
       if (res.status === 200) {
         return res.json();
       } else {

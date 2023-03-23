@@ -16,16 +16,11 @@ export default function HomeAuth(props) {
 
     useEffect(()=>{
         let url = 'http://127.0.0.1:8000/api/v1/profile';
-        let params = {
-            username: user.username,
-        };
         let options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': `Token ${token}`,
             },
-            body: JSON.stringify(params)
           };
           fetch(url, options).then(res => {
             if (res.status === 200) {
