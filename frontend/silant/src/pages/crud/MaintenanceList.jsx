@@ -4,6 +4,7 @@ import DeleteBlock from './DeleteBlock';
 
 export default function MaintenanceList() {
   let [maintenance, setMaintenance] = useState();
+  let [deleteBlock, setDeleteBlock] = useState();
   let navigate = useNavigate();
 
   useEffect(()=>{
@@ -30,23 +31,29 @@ export default function MaintenanceList() {
   }
 
 
+  function blockVoid () {
+    setDeleteBlock();
+  }
+
+
   function deleteHolder (id, instance, name) {
     let oldDeleteBlock = document.getElementById('delete-block');
     if (oldDeleteBlock) {
-      oldDeleteBlock.remove();
+      blockVoid();
     };
-    let table = document.querySelector('table');
-    let deleteBlock = () => <DeleteBlock id={id} instance={instance} name={name} />;
-    table.insertAdjacentElement('beforebegin', deleteBlock);
+    setDeleteBlock(<DeleteBlock id={id} instance={instance} name={name} void={blockVoid}/>);
   }
 
 
   if (!maintenance) {
-    return <div>No data</div>
+    return <div>Данные не найдены</div>
+  } else if (maintenance.length === 0) {
+    return <div>По вашему запросу не найдено ни одной записи</div>
   } else {
     return (
       <div>
         <p>Обновление данных о ТО</p>
+        { deleteBlock }
         <table>
           <thead>
             <tr>

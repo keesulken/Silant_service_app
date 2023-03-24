@@ -120,6 +120,20 @@ class UserAPIView(APIView):
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
+    def delete(self, request, **kwargs):
+        if request.user.is_superuser:
+            if not kwargs:
+                return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            else:
+                user = User.objects.get(pk=kwargs['id'])
+                try:
+                    user.delete()
+                    return Response(status=status.HTTP_204_NO_CONTENT)
+                except ProtectedError:
+                    return Response({'error': 'protected object'}, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
 
 class MachineAPIView(APIView):
     def get(self, request, **kwargs):

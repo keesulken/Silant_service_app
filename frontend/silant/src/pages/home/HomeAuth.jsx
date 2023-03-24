@@ -58,11 +58,11 @@ export default function HomeAuth(props) {
         { user.type === 'MNU' && <p>Клиент {user.username}</p>}
         { user.type === 'SVC' && <p>Сервисная организация {user.username}</p>}
         { user.type === 'MFR' && <p>Представитель производителя {user.username}</p>}
-        <p>info about machines</p>
+        <p>Информация о комплектации и технических характеристиках Вашей техники</p>
         <p>
-            <button id='machine-table' onClick={handleClick}>main info</button>
-            <button id='maintenance-table' onClick={handleClick}>maintenance</button>
-            <button id='reclamation-table' onClick={handleClick}>reclamation</button>
+            <button id='machine-table' onClick={handleClick}>Общая инфо</button>
+            <button id='maintenance-table' onClick={handleClick}>ТО</button>
+            <button id='reclamation-table' onClick={handleClick}>Рекламации</button>
         </p>
         <AuthMachine machines={machines} style={machinesStyle} />
         <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />

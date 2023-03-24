@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import DeleteBlock from './DeleteBlock';
 
 export default function ReclamationList() {
   let [reclamation, setReclamation] = useState();
+  let [deleteBlock, setDeleteBlock] = useState();
   let navigate = useNavigate();
 
   useEffect(()=>{
@@ -28,12 +30,30 @@ export default function ReclamationList() {
     navigate(`/update/reclamation/${id}`)
   }
 
+
+  function blockVoid () {
+    setDeleteBlock();
+  }
+
+
+  function deleteHolder (id, instance, name) {
+    let oldDeleteBlock = document.getElementById('delete-block');
+    if (oldDeleteBlock) {
+      blockVoid();
+    };
+    setDeleteBlock(<DeleteBlock id={id} instance={instance} name={name} void={blockVoid}/>);
+  }
+
+
   if (!reclamation) {
-    return <div>No data</div>
+    return <div>Данные не найдены</div>
+  } else if (reclamation.length === 0) {
+    return <div>По вашему запросу не найдено ни одной записи</div>
   } else {
     return (
       <div>
         <p>Обновление данных рекламаций</p>
+        { deleteBlock }
         <table>
           <thead>
             <tr>
@@ -69,7 +89,10 @@ export default function ReclamationList() {
                 <td><Link to={'/company/' + item.service_company.pk}
                 >{ item.service_company.name }</Link></td>
                 <td><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
-                <td><button>Удалить</button></td>
+                <td><button onClick={(e) => 
+                deleteHolder(item.id, 'reclamation', 
+                `${item.repair_method.name} ${item.unit.name} от ${item.rejection_date}`, e)}
+                >Удалить</button></td>
               </tr>
             )) }
           </tbody>

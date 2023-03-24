@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Forbidden403 from '../Forbidden403';
+import DeleteBlock from './DeleteBlock';
 
 export default function UserList(props) {
   let [users, setUsers] = useState();
+  let [deleteBlock, setDeleteBlock] = useState();
   let navigate = useNavigate();
 
 
@@ -31,13 +33,28 @@ export default function UserList(props) {
   }
 
 
+  function blockVoid () {
+    setDeleteBlock();
+  }
+
+
+  function deleteHolder (id, instance, name) {
+    let oldDeleteBlock = document.getElementById('delete-block');
+    if (oldDeleteBlock) {
+      blockVoid();
+    };
+    setDeleteBlock(<DeleteBlock id={id} instance={instance} name={name} void={blockVoid}/>);
+  }
+
+
   if (props.user) {
-    if (props.user.is_superuser && !users) {
-      return <div>No data</div>
+    if (props.user.is_superuser && (!users || users.length === 0)) {
+      return <div>Нет данных</div>
     } else if (props.user.is_superuser) {
       return (
       <div>
         <p>Редактирование учётных данных</p>
+        { deleteBlock }
         <table>
           <thead>
             <tr>
@@ -64,7 +81,9 @@ export default function UserList(props) {
                 { user.is_superuser && <td> Да </td> }
                 { !user.is_superuser && <td> Нет </td> }
                 <td><button onClick={(e) => updateHolder(user.id, e)}>Изменить</button></td>
-                <td><button>Удалить</button></td>
+                <td><button onClick={(e) => 
+                deleteHolder(user.id, 'user', 
+                `Пользователя ${user.username}`, e)}>Удалить</button></td>
               </tr>
             )) }
           </tbody>

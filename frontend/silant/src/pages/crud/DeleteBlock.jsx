@@ -1,12 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export default function DeleteBlock(props) {
-  let navigate = useNavigate();
-  let block = document.getElementById('delete-block');
 
 
   function deleteConfirm () {
+    let block = document.getElementById('delete-block');
     let url = `http://127.0.0.1:8000/api/v1/${props.instance}/${props.id}`;
     let options = {
       method: 'DELETE',
@@ -16,20 +14,20 @@ export default function DeleteBlock(props) {
     };
     fetch(url, options).then(res => {
       if (res.status === 204) {
-        navigate('/update/' + props.instance);
+        window.location.reload();
       } else if (res.status === 200) {
         return res.json();
       } else {
-        console.log('error')
+        console.log('error');
       };
     }).then(result => {
-      block.innerHTML = <p>{result.error}</p>
+      block.innerHTML = <p>{result.error}</p>;
     }).catch(error => console.log(error.message));
   }
 
 
   function cancelHandler () {
-    block.remove();
+    props.void();
   }
 
 
