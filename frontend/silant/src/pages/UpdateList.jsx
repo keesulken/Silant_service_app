@@ -23,9 +23,10 @@ export default function UpdateList(props) {
   } else if (props.user) {
     if (instance === 'machine' && props.user.type === 'MFR') {
       return <MachineList />
-    } else if (instance === 'maintenance' && props.user.type === 'MFR') {
+    } else if (instance === 'maintenance') {
       return <MaintenanceList />
-    } else if (instance === 'reclamation' && props.user.type === 'MFR') {
+    } else if (instance === 'reclamation' && 
+    (props.user.type === 'MFR' ||  props.user.type === 'SVC')) {
       return <ReclamationList />
     } else if (instance === 'directory' && props.user.type === 'MFR') {
       return <DirectoryList />

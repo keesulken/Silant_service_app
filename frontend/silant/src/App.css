@@ -7,10 +7,20 @@
 .header-top-line {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 0 5vw;
+}
+
+.header-bottom-line {
+  display: flex;
+  justify-content: center;
 }
 
 .app-footer {
   background-color: #D20A11;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
 }
 
 body {

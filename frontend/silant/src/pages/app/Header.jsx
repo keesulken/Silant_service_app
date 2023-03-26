@@ -8,7 +8,8 @@ export default function Header(props) {
     <div className='app-header'>
         <div className='header-top-line'>
             <p className='logo'>Logo</p>
-            <p className='contacts'>Telegram</p>
+            <p className='contacts'>+7-8352-20-12-09, 
+            <a href='https://desktop.telegram.org'> Telegram</a></p>
             { props.user && 
             (props.user.is_superuser && <p><Link to={'/admin'}>Админка</Link></p>) }
             <Enterquit user={props.user} />

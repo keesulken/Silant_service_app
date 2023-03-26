@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 export default function Enterquit(props) {
   if (props.user) {
     return (
-        <Link to='/logout'>quit</Link>
+        <Link to='/logout'>Выйти</Link>
     )
   } else {
     return (
-        <Link to="/login">enter</Link>
+        <Link to="/login">Авторизация</Link>
     )
   }
 }

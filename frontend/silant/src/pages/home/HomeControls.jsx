@@ -14,11 +14,20 @@ export default function HomeControls(props) {
 
   return (
     <div>
-        { props.user.type === 'MNU' && <p>Создать новую запись: 
-            <button onClick={(e) => create('maintenance', e)}>Тех. обслуживание</button></p>}
-        { props.user.type === 'SVC' && <p>Создать новую запись: 
+        { props.user.type === 'MNU' && <p>Управление записями: 
+            <button onClick={(e) => create('maintenance', e)}>Создать ТО</button>
+            <button onClick={(e) => update('maintenance', e)}>Редактировать ТО</button>
+            </p>}
+        { props.user.type === 'SVC' && <>
+        <p>Создать новую запись: 
             <button onClick={(e) => create('maintenance', e)}>Тех. обслуживание</button>
-            <button onClick={(e) => create('reclamation', e)}>Рекламация</button></p>}
+            <button onClick={(e) => create('reclamation', e)}>Рекламация</button>
+        </p>
+        <p>Редактировать записи:
+            <button onClick={(e) => update('maintenance', e)}>Тех. обслуживание</button>
+            <button onClick={(e) => update('reclamation', e)}>Рекламация</button>
+        </p>
+        </>}
         { props.user.type === 'MFR' && 
         <>
         <p>Создать запись: 
