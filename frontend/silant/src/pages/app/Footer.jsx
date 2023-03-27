@@ -6,7 +6,7 @@ export default function Footer() {
         <p>+7-8352-20-12-09, 
           <a href='https://desktop.telegram.org'> Telegram</a>
         </p>
-        <p>My silant 2022</p>
+        <p>Мой Силант 2022</p>
     </div>
   )
 }

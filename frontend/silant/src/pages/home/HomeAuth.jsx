@@ -3,13 +3,19 @@ import AuthMachine from './AuthMachine';
 import AuthMaintenance from './AuthMaintenance';
 import AuthReclamation from './AuthReclamation';
 import HomeControls from './HomeControls';
+import MachineFilters from './MachineFilters';
+import MaintenanceFilters from './MaintenanceFilters';
+import ReclamationFilters from './ReclamationFilters';
 
 export default function HomeAuth(props) {
     let token = localStorage.getItem('token');
     let user = props.user;
-    let [machines, setMachines] = useState(null);
-    let [maintenance, setMaintenance] = useState(null);
-    let [reclamation, setReclamation] = useState(null);
+    let [machines, setMachines] = useState();
+    let [maintenance, setMaintenance] = useState();
+    let [reclamation, setReclamation] = useState();
+    let [units, setUnits] = useState();
+    let [repairs, setRepairs] = useState();
+    let [companies, setCompanies] = useState();
     let [machinesStyle, setMachinesStyle] = useState('initial');
     let [maintenanceStyle, setMaintenanceStyle] = useState('none');
     let [reclamationStyle, setReclamationStyle] = useState('none');
@@ -32,6 +38,9 @@ export default function HomeAuth(props) {
             setMachines(result['machines']);
             setMaintenance(result['maintenance']);
             setReclamation(result['reclamation']);
+            setUnits(result['units']);
+            setRepairs(result['repairs']);
+            setCompanies(result['companies']);
           }).catch(error => console.log(error.message));
     }, [])
 
@@ -53,6 +62,114 @@ export default function HomeAuth(props) {
     }
 
 
+    function machineFilterHandler (e) {
+        e.preventDefault();
+        let id = 'machine-filters-form';
+        let nullList = [];
+        let data = new FormData(document.getElementById(id));
+        for (let [key, value] of data) {
+            if (value === '-----') {
+                nullList.push(key);
+            };
+        };
+        for (let i of nullList) {
+            data.delete(i);
+        };
+        if (nullList.length > 4) {
+            console.log('error');
+        } else {
+            let url = 'http://127.0.0.1:8000/api/v1/filtered/machine';
+            let options = {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Token ${localStorage.getItem('token')}`,
+                },
+                body: data,
+              };
+            fetch(url, options).then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    console.log('error');
+                };
+            }).then(result => setMachines(result))
+            .catch(error => console.log(error.message));
+        };
+    }
+
+
+    function maintenanceFilterHandler (e) {
+        e.preventDefault();
+        let id = 'maintenance-filters-form';
+        let nullList = [];
+        let data = new FormData(document.getElementById(id));
+        for (let [key, value] of data) {
+            if (value === '-----') {
+                nullList.push(key);
+            };
+        };
+        for (let i of nullList) {
+            data.delete(i);
+        };
+        if (nullList.length > 2) {
+            console.log('error');
+        } else {
+            let url = 'http://127.0.0.1:8000/api/v1/filtered/maintenance';
+            let options = {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Token ${localStorage.getItem('token')}`,
+                },
+                body: data,
+              };
+            fetch(url, options).then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    console.log('error');
+                };
+            }).then(result => setMaintenance(result))
+            .catch(error => console.log(error.message));
+        };
+    }
+
+
+    function reclamationFilterHandler (e) {
+        e.preventDefault();
+        let id = 'reclamation-filters-form';
+        let nullList = [];
+        let data = new FormData(document.getElementById(id));
+        for (let [key, value] of data) {
+            if (value === '-----') {
+                nullList.push(key);
+            };
+        };
+        for (let i of nullList) {
+            data.delete(i);
+        };
+        if (nullList.length > 2) {
+            console.log('error');
+        } else {
+            let url = 'http://127.0.0.1:8000/api/v1/filtered/reclamation';
+            let options = {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Token ${localStorage.getItem('token')}`,
+                },
+                body: data,
+              };
+            fetch(url, options).then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    console.log('error');
+                };
+            }).then(result => setReclamation(result))
+            .catch(error => console.log(error.message));
+        };
+    }
+
+
   return (
     <div>
         { user.type === 'MNU' && <p>Клиент {user.username}</p>}
@@ -64,9 +181,19 @@ export default function HomeAuth(props) {
             <button id='maintenance-table' onClick={handleClick}>ТО</button>
             <button id='reclamation-table' onClick={handleClick}>Рекламации</button>
         </p>
+        <hr />
+        <MachineFilters units={units} style={machinesStyle}
+        handler={machineFilterHandler}  />
+        <MaintenanceFilters repairs={repairs} companies={companies} 
+        machines={machines} style={maintenanceStyle} 
+        handler={maintenanceFilterHandler} />
+        <ReclamationFilters repairs={repairs} companies={companies} 
+        style={reclamationStyle} handler={reclamationFilterHandler} />
+        <hr />
         <AuthMachine machines={machines} style={machinesStyle} />
         <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />
         <AuthReclamation reclamation={reclamation} style={reclamationStyle} />
+        <hr />
         <HomeControls user={user} />
     </div>
   )

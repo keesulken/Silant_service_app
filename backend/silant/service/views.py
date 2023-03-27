@@ -270,26 +270,44 @@ class PersonalPageAPIView(APIView):
             machines = Machine.objects.all().order_by('-dispatch_date')
             maintenance = Maintenance.objects.all().order_by('-date')
             reclamation = Reclamation.objects.all().order_by('-rejection_date')
+            units = MachineDirectory.objects.all()
+            repairs = RepairDirectory.objects.all()
+            companies = ServiceCompanyProfile.objects.all()
             machine_data = MachineLoggedUserSerializer(machines, many=True).data
             maintenance_data = MaintenanceSerializer(maintenance, many=True).data
             reclamation_data = ReclamationSerializer(reclamation, many=True).data
+            unit_data = MachineDirectoryFormSerializer(units, many=True).data
+            repair_data = RepairDirectoryFormSerializer(repairs, many=True).data
+            company_data = ServiceCompanyProfileTableSerializer(companies, many=True).data
             return Response({
                 'machines': machine_data,
                 'maintenance': maintenance_data,
                 'reclamation': reclamation_data,
+                'units': unit_data,
+                'repairs': repair_data,
+                'companies': company_data,
             })
         elif user.type == 'SVC':
             profile = ServiceCompanyProfile.objects.get(user=user)
             machines = Machine.objects.filter(service_company=profile).order_by('-dispatch_date')
             maintenance = Maintenance.objects.filter(service_company=profile).order_by('-date')
             reclamation = Reclamation.objects.filter(service_company=profile).order_by('-rejection_date')
+            units = MachineDirectory.objects.all()
+            repairs = RepairDirectory.objects.all()
+            companies = ServiceCompanyProfile.objects.all()
             machine_data = MachineLoggedUserSerializer(machines, many=True).data
             maintenance_data = MaintenanceSerializer(maintenance, many=True).data
             reclamation_data = ReclamationSerializer(reclamation, many=True).data
+            unit_data = MachineDirectoryFormSerializer(units, many=True).data
+            repair_data = RepairDirectoryFormSerializer(repairs, many=True).data
+            company_data = ServiceCompanyProfileTableSerializer(companies, many=True).data
             return Response({
                 'machines': machine_data,
                 'maintenance': maintenance_data,
                 'reclamation': reclamation_data,
+                'units': unit_data,
+                'repairs': repair_data,
+                'companies': company_data,
             })
         elif user.type == 'MNU':
             profile = ClientProfile.objects.get(user=user)
@@ -302,13 +320,22 @@ class PersonalPageAPIView(APIView):
                 })
             maintenance = Maintenance.objects.filter(machine__in=machines).order_by('-date')
             reclamation = Reclamation.objects.filter(machine__in=machines).order_by('-rejection_date')
+            units = MachineDirectory.objects.all()
+            repairs = RepairDirectory.objects.all()
+            companies = ServiceCompanyProfile.objects.all()
             machine_data = MachineLoggedUserSerializer(machines, many=True).data
             maintenance_data = MaintenanceSerializer(maintenance, many=True).data
             reclamation_data = ReclamationSerializer(reclamation, many=True).data
+            unit_data = MachineDirectoryFormSerializer(units, many=True).data
+            repair_data = RepairDirectoryFormSerializer(repairs, many=True).data
+            company_data = ServiceCompanyProfileTableSerializer(companies, many=True).data
             return Response({
                 'machines': machine_data,
                 'maintenance': maintenance_data,
                 'reclamation': reclamation_data,
+                'units': unit_data,
+                'repairs': repair_data,
+                'companies': company_data,
             })
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -663,3 +690,83 @@ class PasswordAPIView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class FilteredItemsAPIView(APIView):
+    def post(self, request, **kwargs):
+        if kwargs['instance'] == 'machine':
+            if request.user.type == 'MFR':
+                machines = Machine.objects.all().ordered_by('-dispatch_date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(service_company=profile).ordered_by('-dispatch_date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(service_company=profile).ordered_by('-dispatch_date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            if request.data.__contains__('mcn-filter'):
+                filter_item = MachineDirectory.objects.get(name=request.data['mcn-filter'])
+                machines = machines.filter(machine_model=filter_item)
+            if request.data.__contains__('eng-filter'):
+                filter_item = MachineDirectory.objects.get(name=request.data['eng-filter'])
+                machines = machines.filter(engine_model=filter_item)
+            if request.data.__contains__('trm-filter'):
+                filter_item = MachineDirectory.objects.get(name=request.data['trm-filter'])
+                machines = machines.filter(transmission_model=filter_item)
+            if request.data.__contains__('dra-filter'):
+                filter_item = MachineDirectory.objects.get(name=request.data['dra-filter'])
+                machines = machines.filter(drive_axle_model=filter_item)
+            if request.data.__contains__('sta-filter'):
+                filter_item = MachineDirectory.objects.get(name=request.data['sta-filter'])
+                machines = machines.filter(steered_axle_model=filter_item)
+            data = MachineLoggedUserSerializer(machines, many=True).data
+            return Response(data)
+        elif kwargs['instance'] == 'maintenance':
+            if request.user.type == 'MFR':
+                maintenances = Maintenance.objects.all().order_by('-date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                maintenances = Maintenance.objects.filter(service_company=profile).order_by('-date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(client=profile)
+                maintenances = Maintenance.objects.filter(machine__in=machines).order_by('-date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            if request.data.__contains__('mnt-filter'):
+                filter_item = RepairDirectory.objects.get(name=request.data['mnt-filter'])
+                maintenances = maintenances.filter(type=filter_item)
+            if request.data.__contains__('mt-machine-filter'):
+                filter_item = Machine.objects.get(factory_number=request.data['mt-machine-filter'])
+                maintenances = maintenances.filter(machine=filter_item)
+            if request.data.__contains__('mt-sc-filter'):
+                filter_item = ServiceCompanyProfile.objects.get(name=request.data['mt-sc-filter'])
+                maintenances = maintenances.filter(service_company=filter_item)
+            data = MaintenanceSerializer(maintenances, many=True).data
+            return Response(data)
+        elif kwargs['instance'] == 'reclamation':
+            if request.user.type == 'MFR':
+                reclamations = Reclamation.objects.all().order_by('-rejection_date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                reclamations = Reclamation.objects.filter(service_company=profile).order_by('-rejection_date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(client=profile)
+                reclamations = Reclamation.objects.filter(machine__in=machines).order_by('-rejection_date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            if request.data.__contains__('mnt-filter'):
+                filter_item = RepairDirectory.objects.get(name=request.data['unt-filter'])
+                reclamations = reclamations.filter(unit=filter_item)
+            if request.data.__contains__('mt-machine-filter'):
+                filter_item = RepairDirectory.objects.get(name=request.data['rpt-filter'])
+                reclamations = reclamations.filter(repair_method=filter_item)
+            if request.data.__contains__('mt-sc-filter'):
+                filter_item = ServiceCompanyProfile.objects.get(name=request.data['recl-sc-filter'])
+                reclamations = reclamations.filter(service_company=filter_item)
+            data = ReclamationSerializer(reclamations, many=True).data
+            return Response(data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
