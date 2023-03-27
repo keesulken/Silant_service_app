@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import NotFoundPage from '../NotFoundPage';
 import { useNavigate } from 'react-router-dom';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function MachineForm(props) {
   let [instance, setInstance] = useState();
   let [units, setUnits] = useState();
   let [clients, setClients] = useState();
   let [companies, setCompanies] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let navigate = useNavigate();
 
 
@@ -24,11 +26,25 @@ export default function MachineForm(props) {
           return res.json();
         } else if (res.status === 404) {
           setInstance(404);
+        } else if (res.status === 403 ||
+          res.status === 401) {
+          throw new Error('403');
         } else {
-          console.log('error');
-        }
+          throw new Error('500');
+        };
       }).then(result => setInstance(result))
-      .catch(error => console.log(error.message));
+      .catch(error => {
+        if (error.message === '403') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Недостаточно прав'} />;
+          setErrorBlock(block);
+        } else if (error.message === '500' ||
+        error.name === 'TypeError') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+          setErrorBlock(block);
+        };
+      });
     };
   }, [])
 
@@ -84,16 +100,17 @@ export default function MachineForm(props) {
     let data = new FormData(document.querySelector('form'))
     for (let [key, value] of data) {
       if (value === '') {
-        errors.push('All fields required');
+        errors.push('Поля 1-15 обязательны к заполнению');
         break;
       };
     };
     if (now - new Date(data.get('dispatch')) < 0 ) {
-      errors.push('invalid date');
+      errors.push('Поле "Дата отгрузки" содержит некорректную дату');
     };
-    console.log(errors);
+    errorBlockVoid();
     if (errors.length !== 0) {
-      console.log('error');
+      let block = <ErrorBlock error={errors[0]} />;
+      setErrorBlock(block);
     } else {
       if (instance) {
         let url = 'http://127.0.0.1:8000/api/v1/machine/' + instance.id;
@@ -107,10 +124,24 @@ export default function MachineForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/machine/' + instance.id);
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else {
         let url = 'http://127.0.0.1:8000/api/v1/machine';
         let options = {
@@ -123,12 +154,33 @@ export default function MachineForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 201) {
             return res.json();
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
         }).then(result => navigate('/machine/' + result.id))
-        .catch(error => console.log(error.message));
+        .catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       };
+    };
+  }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
     };
   }
 
@@ -141,6 +193,7 @@ export default function MachineForm(props) {
     return (
       <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Редактирование записи о машине</p>
+      { errorBlock }
       <p>Зав. № машины: <input type='text' name='serial' 
       id='serial' /></p>
       <p>Модель техники: 
@@ -248,6 +301,7 @@ export default function MachineForm(props) {
     return (
     <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Создание новой записи о машине</p>
+      { errorBlock }
       <p>Зав. № машины: <input type='text' name='serial' ></input></p>
       <p>Модель техники: 
         <select name='tech-model'>

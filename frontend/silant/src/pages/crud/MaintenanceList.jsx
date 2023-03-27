@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DeleteBlock from './DeleteBlock';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function MaintenanceList() {
   let [maintenance, setMaintenance] = useState();
   let [deleteBlock, setDeleteBlock] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let navigate = useNavigate();
 
   useEffect(()=>{
@@ -18,11 +20,25 @@ export default function MaintenanceList() {
     fetch(url, options).then(res => {
       if (res.status === 200) {
         return res.json();
+      } else if (res.status === 403 ||
+        res.status === 401) {
+        throw new Error('403');
       } else {
-        console.log('error');
+        throw new Error('500');
       };
     }).then(result => setMaintenance(result))
-    .catch(error => console.log(error.message));
+    .catch(error => {
+      if (error.message === '403') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Недостаточно прав'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
   }, [])
 
 
@@ -45,6 +61,13 @@ export default function MaintenanceList() {
   }
 
 
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
+    };
+  }
+
+
   if (!maintenance) {
     return <div>Данные не найдены</div>
   } else if (maintenance.length === 0) {
@@ -53,6 +76,7 @@ export default function MaintenanceList() {
     return (
       <div>
         <p>Обновление данных о ТО</p>
+        { errorBlock }
         { deleteBlock }
         <table>
           <thead>

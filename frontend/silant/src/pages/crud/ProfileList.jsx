@@ -32,7 +32,7 @@ export default function ProfileList() {
 
 
   if (!clients || !companies) {
-    return <div>No data</div>
+    return <div>Нет данных</div>
   } else {
     return (
       <div>

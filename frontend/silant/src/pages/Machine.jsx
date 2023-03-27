@@ -6,13 +6,15 @@ import AuthMaintenance from './home/AuthMaintenance';
 import AuthReclamation from './home/AuthReclamation';
 import SingleMachine from './singleobjtables/SingleMachine';
 import SingleObjTitle from './singleobjtables/SingleObjTitle';
+import ErrorBlock from './app/ErrorBlock';
 
 export default function Machine(props) {
   let token = localStorage.getItem('token');
   let { id } = useParams();
-  let [machine, setMachine] = useState(null);
-  let [maintenance, setMaintenance] = useState(null);
-  let [reclamation, setReclamation] = useState(null);
+  let [machine, setMachine] = useState();
+  let [maintenance, setMaintenance] = useState();
+  let [reclamation, setReclamation] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let [machineStyle, setMachineStyle] = useState('initial');
   let [maintenanceStyle, setMaintenanceStyle] = useState('none');
   let [reclamationStyle, setReclamationStyle] = useState('none');
@@ -29,14 +31,28 @@ export default function Machine(props) {
         return res.json();
       } else if (res.status === 404) {
         setMachine(404);
+      } else if (res.status === 403 ||
+        res.status === 401) {
+        throw new Error('403');
       } else {
-        console.log('error');
+        throw new Error('500');
       };
     }).then(result => {
       setMachine(result['machine']);
       setMaintenance(result['maintenance']);
       setReclamation(result['reclamation']);
-    }).catch(error => console.log(error.message));
+    }).catch(error => {
+      if (error.message === '403') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Недостаточно прав'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
   }, [])
 
 
@@ -54,7 +70,15 @@ export default function Machine(props) {
         setMaintenanceStyle('none');
         setReclamationStyle('initial');
     };
-}
+  }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
+    };
+  }
+
 
   if (!props.user) {
     return <Forbidden403 />
@@ -70,6 +94,8 @@ export default function Machine(props) {
             <button id='maintenance-table' onClick={handleClick}>ТО</button>
             <button id='reclamation-table' onClick={handleClick}>Рекламации</button>
         </p>
+        <hr />
+        { errorBlock }
         <SingleMachine machine={machine} style={machineStyle} />
         <AuthMaintenance maintenance={maintenance} style={maintenanceStyle} />
         <AuthReclamation reclamation={reclamation} style={reclamationStyle} />

@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import Forbidden403 from '../Forbidden403';
 import NotFoundPage from '../NotFoundPage';
 import { useNavigate } from 'react-router-dom';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function UserForm(props) {
   let {id} = useParams();
   let [user, setUser] = useState();
   let [profName, setProfName] = useState();
   let [profDesc, setProfDesc] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let name = document.getElementById('p-name');
   let desc = document.getElementById('p-desc');
   let warning = document.getElementById('warning');
@@ -36,8 +38,11 @@ export default function UserForm(props) {
           return res.json();
         } else if (res.status === 404) {
           setUser(404);
+        } else if (res.status === 403 ||
+          res.status === 401) {
+          throw new Error('403');
         } else {
-          console.log('error');
+          throw new Error('500');
         };
       }).then(result => {
         setUser(result);
@@ -49,7 +54,18 @@ export default function UserForm(props) {
           setProfDesc(result.sc_profile[0].description);
         }
       })
-      .catch(error => console.log(error.message));
+      .catch(error => {
+        if (error.message === '403') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Недостаточно прав'} />;
+          setErrorBlock(block);
+        } else if (error.message === '500' ||
+        error.name === 'TypeError') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+          setErrorBlock(block);
+        };
+      });
     }
   }, [])
 
@@ -153,15 +169,17 @@ export default function UserForm(props) {
     let data = new FormData(document.querySelector('form'));
     for (let [key, value] of data) {
       if (value === '') {
-        errors.push('All fields required');
+        errors.push('Все поля обязательны к заполнению');
         break;
       };
     };
     if (data.get('username').length < 4) {
-      errors.push('username should consist at least 4 chars');
+      errors.push('Имя пользователя должно состоять как миинимум из 4-х символов');
     };
+    errorBlockVoid();
     if (errors.length !== 0) {
-      console.log('error');
+      let block = <ErrorBlock error={errors[0]} />;
+      setErrorBlock(block);
     } else {
       if (user) {
         let url = 'http://127.0.0.1:8000/api/v1/user/' + user.id;
@@ -175,10 +193,30 @@ export default function UserForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/user/update');
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
+          } else if (res.status === 400) {
+            throw new Error('400');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '400') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Некорректные данные'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else {
         let url = 'http://127.0.0.1:8000/api/v1/user';
         let options = {
@@ -191,10 +229,30 @@ export default function UserForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 201) {
             navigate('/user/update');
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
+          } else if (res.status === 400) {
+            throw new Error('400');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '400') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Некорректные данные'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       };
     };
   }
@@ -216,10 +274,37 @@ export default function UserForm(props) {
     fetch(url, options).then(res => {
       if (res.status === 204) {
         navigate('/user/update');
+      } else if (res.status === 403 ||
+        res.status === 401) {
+        throw new Error('403');
+      } else if (res.status === 400) {
+        throw new Error('400');
       } else {
-        console.log('error');
+        throw new Error('500');
       };
-    }).catch(error => console.log(error.message));
+    }).catch(error => {
+      if (error.message === '403') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Недостаточно прав'} />;
+        setErrorBlock(block);
+      } else if (error.message === '400') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Некорректные данные'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
+  }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
+    };
   }
 
 
@@ -231,6 +316,7 @@ export default function UserForm(props) {
         return (
           <div>
           <p>Изменение учётной записи</p>
+          { errorBlock }
           <form onReset={resetHandler} onSubmit={sendForm} encType="multipart/form-data">
             <p>Имя пользователя: 
               <input type='text' name='username' id='username' />
@@ -289,6 +375,7 @@ export default function UserForm(props) {
         return (
         <div>
           <p>Создание новой учётной записи</p>
+          { errorBlock }
           <form onReset={resetHandler} onSubmit={sendForm} encType="multipart/form-data">
             <p>Имя пользователя: 
               <input type='text' name='username' id='username' />

@@ -43,7 +43,8 @@ export default function AuthMachine(props) {
             <tbody>
                 { props.machines.map(item => (
                   <tr key={item.id}>
-                    <td>{ item.factory_number }</td>
+                    <td><Link to={'/machine/' + item.id}
+                    >{ item.factory_number }</Link></td>
                     <td><Link to={'/unit/' + item.machine_model.pk}
                     >{ item.machine_model.name }</Link></td>
                     <td><Link to={'/unit/' + item.engine_model.pk}

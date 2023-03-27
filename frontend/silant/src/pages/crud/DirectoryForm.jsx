@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
 import { useNavigate } from 'react-router-dom';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function DirectoryForm(props) {
   let [instance, setInstance] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let navigate = useNavigate();
   let units = [
     'Модель техники',
@@ -33,11 +35,25 @@ export default function DirectoryForm(props) {
           return res.json();
         } else if (res.status === 404) {
           setInstance(404);
+        } else if (res.status === 403 ||
+          res.status === 401) {
+          throw new Error('403');
         } else {
-          console.log('error');
+          throw new Error('500');
         };
       }).then(result => setInstance(result))
-      .catch(error => console.log(error.message));
+      .catch(error => {
+        if (error.message === '403') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Недостаточно прав'} />;
+          setErrorBlock(block);
+        } else if (error.message === '500' ||
+        error.name === 'TypeError') {
+          errorBlockVoid();
+          let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+          setErrorBlock(block);
+        };
+      });
     };
   }, [])
 
@@ -93,13 +109,14 @@ export default function DirectoryForm(props) {
     };
     for (let [key, value] of data) {
       if (value === '') {
-        errors.push('All fields required');
+        errors.push('Все поля обязательны к заполнению');
         break;
       };
     };
-    console.log(errors);
+    errorBlockVoid();
     if (errors.length !== 0) {
-      console.log('error');
+      let block = <ErrorBlock error={errors[0]} />;
+      setErrorBlock(block);
     } else {
       if (instance && props.type === 'unit') {
         let url = 'http://127.0.0.1:8000/api/v1/unit/' + instance.id;
@@ -113,10 +130,24 @@ export default function DirectoryForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/unit/' + instance.id);
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else if (instance && props.type === 'repair') {
         let url = 'http://127.0.0.1:8000/api/v1/repair/' + instance.id;
         let options = {
@@ -129,10 +160,24 @@ export default function DirectoryForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/repair/' + instance.id);
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else if (!instance && data.has('unit')) {
         let url = 'http://127.0.0.1:8000/api/v1/units';
         let options = {
@@ -145,11 +190,25 @@ export default function DirectoryForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 201) {
             return res.json();
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
         }).then(result => navigate('/unit/' + result.id))
-        .catch(error => console.log(error.message));
+        .catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else {
         let url = 'http://127.0.0.1:8000/api/v1/repairs';
         let options = {
@@ -162,12 +221,33 @@ export default function DirectoryForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 201) {
             return res.json();
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
         }).then(result => navigate('/repair/' + result.id))
-        .catch(error => console.log(error.message));
+        .catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       };
+    };
+  }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
     };
   }
 
@@ -180,6 +260,7 @@ export default function DirectoryForm(props) {
       <p>Редактирование справочника</p>
       { props.type === 'unit' && <p>Справочник агрегатов</p> }
       { props.type === 'repair' && <p>Справочник по обслуживанию</p> }
+      { errorBlock }
       <p id='p-dir-type' style={{display: 'block'}}>Тип справочника:
         <select name='type'>
           { props.type === 'unit' && units.map((unit, index) => (
@@ -206,6 +287,7 @@ export default function DirectoryForm(props) {
     return (
     <form onSubmit={sendForm} encType="multipart/form-data">
       <p>Создание нового справочника</p>
+      { errorBlock }
       <p>Назначение:
         <label>
           <input type='radio' name='dir-type' id='unit-radio' 

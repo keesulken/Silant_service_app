@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function DeleteBlock(props) {
+  let [errorBlock, setErrorBlock] = useState();
 
 
   function deleteConfirm () {
-    let block = document.getElementById('delete-block');
     let url = `http://127.0.0.1:8000/api/v1/${props.instance}/${props.id}`;
     let options = {
       method: 'DELETE',
@@ -16,13 +17,22 @@ export default function DeleteBlock(props) {
       if (res.status === 204) {
         window.location.reload();
       } else if (res.status === 200) {
-        return res.json();
+        throw new Error('protected');
       } else {
-        console.log('error');
+        throw new Error('500');
       };
-    }).then(result => {
-      block.innerHTML = <p>{result.error}</p>;
-    }).catch(error => console.log(error.message));
+    }).catch(error => {
+      if (error.message === 'protected') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Существуют записи, связанные с этой, удаление невозможно'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
   }
 
 
@@ -31,11 +41,19 @@ export default function DeleteBlock(props) {
   }
 
 
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
+    };
+  }
+
+
   return (
     <div id='delete-block'>
-        <p>Вы действительно хотите удалить { props.name }?</p>
-        <button onClick={deleteConfirm}>Удалить</button>
-        <button onClick={cancelHandler}>Отмена</button>
+      { errorBlock }
+      <p>Вы действительно хотите удалить { props.name }?</p>
+      <button onClick={deleteConfirm}>Удалить</button>
+      <button onClick={cancelHandler}>Отмена</button>
     </div>
   )
 }

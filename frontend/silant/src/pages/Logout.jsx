@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import ErrorBlock from './app/ErrorBlock';
 
 export default function Logout(props) {
   const navigate = useNavigate();
+  let [errorBlock, setErrorBlock] = useState();
 
   useEffect(()=>{
     if (!props.user) {
       navigate('/login');
-    }
+    };
   });
 
   function handleClick() {
@@ -23,14 +25,24 @@ export default function Logout(props) {
       if (res.status === 204) {
         localStorage.removeItem('token');
         window.location.reload();
-      }
-    }).catch(error => console.log(error.message));
+      } else {
+        throw new Error('500');
+      };
+    }).catch(error => {
+      if (error) {
+        setErrorBlock('500');
+      };
+    });
   }
 
-  return (
-    <div>
-      <h2>You sure you want to quit?</h2>
-      <button onClick={handleClick}>Quit</button>
-    </div>
-  )
+  if (errorBlock) {
+    return <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />
+  } else {
+    return (
+      <div>
+        <h2>Вы действительно хотите выйти?</h2>
+        <button onClick={handleClick}>Выйти</button>
+      </div>
+    )
+  };
 }

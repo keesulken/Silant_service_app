@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ErrorBlock from './app/ErrorBlock';
 
 export default function LoginPage(props) {
   const navigate = useNavigate();
+  let [errorBlock, setErrorBlock] = useState();
 
   useEffect(()=>{
     if (props.user) {
@@ -28,22 +30,46 @@ export default function LoginPage(props) {
     };
     fetch(url, options).then(res => {
       if (res.status === 200) {
+        errorBlockVoid();
         return res.json();
+      } else if (res.status === 400) {
+        throw new Error('400');
       } else {
-        console.log('error');
+        throw new Error('500');
       };
     }).then(result => {
       localStorage.setItem('token', result['auth_token']);
       window.location.reload();
-    }).catch(error => console.log(error.message));
+    }).catch(error => {
+      if (error.message === '400') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неверные логин и/или пароль'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
   }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
+    };
+  }
+
   
   return (
     <form onSubmit={handleSubmit}>
-      <p>Username: <input type='text' id='username' /></p>
-      <p>Password: <input type='password' id='password' /></p>
-      <p><input type='submit' value='Submit' />
-      <input type='reset' value='Reset' /></p>
+      <p>Вход в систему</p>
+      { errorBlock }
+      <p>Имя пользователя: <input type='text' id='username' /></p>
+      <p>Пароль: <input type='password' id='password' /></p>
+      <p><input type='submit' value='Войти' />
+      <input type='reset' value='Сброс' /></p>
     </form>
   )
 }

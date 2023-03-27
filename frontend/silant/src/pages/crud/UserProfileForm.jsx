@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import NotFoundPage from '../NotFoundPage';
 import { useNavigate } from 'react-router-dom';
+import ErrorBlock from '../app/ErrorBlock';
 
 export default function UserProfileForm(props) {
-  let [instance, setInstance] = useState(null);
+  let [instance, setInstance] = useState();
+  let [errorBlock, setErrorBlock] = useState();
   let navigate = useNavigate();
 
 
@@ -20,11 +22,25 @@ export default function UserProfileForm(props) {
         return res.json();
     } else if (res.status === 404) {
         setInstance(404);
+    } else if (res.status === 403 ||
+      res.status === 401) {
+      throw new Error('403');
     } else {
-        console.log('error');
+      throw new Error('500');
     };
     }).then(result => setInstance(result))
-    .catch(error => console.log(error.message));
+    .catch(error => {
+      if (error.message === '403') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Недостаточно прав'} />;
+        setErrorBlock(block);
+      } else if (error.message === '500' ||
+      error.name === 'TypeError') {
+        errorBlockVoid();
+        let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+        setErrorBlock(block);
+      };
+    });
   }, [])
 
 
@@ -47,13 +63,14 @@ export default function UserProfileForm(props) {
     let data = new FormData(document.querySelector('form'))
     for (let [key, value] of data) {
       if (value === '') {
-        errors.push('All fields required');
+        errors.push('Все поля обязательны к заполнению');
         break;
       };
     };
-    console.log(errors);
+    errorBlockVoid();
     if (errors.length !== 0) {
-      console.log('error');
+      let block = <ErrorBlock error={errors[0]} />;
+      setErrorBlock(block);
     } else {
       if (instance && props.type === 'client') {
         let url = 'http://127.0.0.1:8000/api/v1/client/' + instance.pk;
@@ -67,10 +84,24 @@ export default function UserProfileForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/client/' + instance.pk);
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       } else if (instance && props.type === 'company') {
         let url = 'http://127.0.0.1:8000/api/v1/company/' + instance.pk;
         let options = {
@@ -83,11 +114,32 @@ export default function UserProfileForm(props) {
         fetch(url, options).then(res => {
           if (res.status === 204) {
             navigate('/company/' + instance.pk);
+          } else if (res.status === 403 ||
+            res.status === 401) {
+            throw new Error('403');
           } else {
-            console.log('error');
+            throw new Error('500');
           };
-        }).catch(error => console.log(error.message));
+        }).catch(error => {
+          if (error.message === '403') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Недостаточно прав'} />;
+            setErrorBlock(block);
+          } else if (error.message === '500' ||
+          error.name === 'TypeError') {
+            errorBlockVoid();
+            let block = <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />;
+            setErrorBlock(block);
+          };
+        });
       };
+    };
+  }
+
+
+  function errorBlockVoid () {
+    if (document.getElementById('error-block')) {
+        setErrorBlock();
     };
   }
 
@@ -97,6 +149,7 @@ export default function UserProfileForm(props) {
   } else if (instance && instance !== 404) {
     return (
       <form onSubmit={sendForm}>
+        { errorBlock }
         { props.type === 'client' && <p>Карточка клиента</p> }
         { props.type === 'company' && <p>Карточка сервисной компании</p> }
         <p>Название: 
