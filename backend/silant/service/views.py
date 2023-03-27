@@ -3,6 +3,8 @@ from django.db.models import ProtectedError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
 
 from .models import *
 from .serializers import *
@@ -258,6 +260,7 @@ class MachineSearchAPIView(APIView):
         try:
             machine = Machine.objects.get(factory_number=request.data['num'])
             data = MachineAnonymousUserSerializer(machine).data
+            print(data)
             return Response(data)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -693,16 +696,61 @@ class PasswordAPIView(APIView):
 
 
 class FilteredItemsAPIView(APIView):
+    def get(self, request, **kwargs):
+        if kwargs['instance'] == 'machine':
+            if request.user.type == 'MFR':
+                machines = Machine.objects.all().order_by('-dispatch_date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(service_company=profile).order_by('-dispatch_date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(service_company=profile).order_by('-dispatch_date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            data = MachineLoggedUserSerializer(machines, many=True).data
+            return Response(data)
+        elif kwargs['instance'] == 'maintenance':
+            if request.user.type == 'MFR':
+                maintenances = Maintenance.objects.all().order_by('-date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                maintenances = Maintenance.objects.filter(service_company=profile).order_by('-date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(client=profile)
+                maintenances = Maintenance.objects.filter(machine__in=machines).order_by('-date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            data = MaintenanceSerializer(maintenances, many=True).data
+            return Response(data)
+        elif kwargs['instance'] == 'reclamation':
+            if request.user.type == 'MFR':
+                reclamations = Reclamation.objects.all().order_by('-rejection_date')
+            elif request.user.type == 'SVC':
+                profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
+                reclamations = Reclamation.objects.filter(service_company=profile).order_by('-rejection_date')
+            elif request.user.type == 'MNU':
+                profile = ClientProfile.objects.filter(user=request.user).last()
+                machines = Machine.objects.filter(client=profile)
+                reclamations = Reclamation.objects.filter(machine__in=machines).order_by('-rejection_date')
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            data = ReclamationSerializer(reclamations, many=True).data
+            return Response(data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
     def post(self, request, **kwargs):
         if kwargs['instance'] == 'machine':
             if request.user.type == 'MFR':
-                machines = Machine.objects.all().ordered_by('-dispatch_date')
+                machines = Machine.objects.all().order_by('-dispatch_date')
             elif request.user.type == 'SVC':
                 profile = ServiceCompanyProfile.objects.filter(user=request.user).last()
-                machines = Machine.objects.filter(service_company=profile).ordered_by('-dispatch_date')
+                machines = Machine.objects.filter(service_company=profile).order_by('-dispatch_date')
             elif request.user.type == 'MNU':
                 profile = ClientProfile.objects.filter(user=request.user).last()
-                machines = Machine.objects.filter(service_company=profile).ordered_by('-dispatch_date')
+                machines = Machine.objects.filter(service_company=profile).order_by('-dispatch_date')
             else:
                 return Response(status=status.HTTP_403_FORBIDDEN)
             if request.data.__contains__('mcn-filter'):
@@ -757,13 +805,13 @@ class FilteredItemsAPIView(APIView):
                 reclamations = Reclamation.objects.filter(machine__in=machines).order_by('-rejection_date')
             else:
                 return Response(status=status.HTTP_403_FORBIDDEN)
-            if request.data.__contains__('mnt-filter'):
+            if request.data.__contains__('unt-filter'):
                 filter_item = RepairDirectory.objects.get(name=request.data['unt-filter'])
                 reclamations = reclamations.filter(unit=filter_item)
-            if request.data.__contains__('mt-machine-filter'):
+            if request.data.__contains__('rpt-filter'):
                 filter_item = RepairDirectory.objects.get(name=request.data['rpt-filter'])
                 reclamations = reclamations.filter(repair_method=filter_item)
-            if request.data.__contains__('mt-sc-filter'):
+            if request.data.__contains__('recl-sc-filter'):
                 filter_item = ServiceCompanyProfile.objects.get(name=request.data['recl-sc-filter'])
                 reclamations = reclamations.filter(service_company=filter_item)
             data = ReclamationSerializer(reclamations, many=True).data

@@ -12,11 +12,16 @@ export default function Detail() {
         setItem(404);
     } else {
         let url = 'http://127.0.0.1:8000/api/v1/' + details + '/' + id;
-        let options = {
+        let options;
+        if (details === 'unit') {
+          options = {};
+        } else {
+          options = {
             headers: {
               'Authorization': `Token ${token}`,
             },
           };
+        };
         fetch(url, options).then(res => {
             if (res.status === 200) {
                 return res.json();

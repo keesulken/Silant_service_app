@@ -13,21 +13,12 @@ export default function ReclamationFilters(props) {
   })
 
 
-  function filterHandler (e) {
-    e.preventDefault();
-    let data = new FormData(document.getElementById(id + '-form'));
-    for (let [key, value] of data) {
-      console.log(`${key} - ${value}`)
-    }
-  }
-
-
   if (props.repairs && props.companies) {
     return (
       <div id={id}>
         <p>Фильтры</p>
         <form id={id + '-form'} encType="multipart/form-data"
-        onSubmit={filterHandler} >
+        onSubmit={props.handler} >
           <table>
             <thead>
               <tr>
