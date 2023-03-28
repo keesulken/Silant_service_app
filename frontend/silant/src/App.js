@@ -39,21 +39,23 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Header user={user}/>
-        <Routes>
-          <Route path="/" element={<Home user={user}/>} />
-          <Route path="/admin" element={<Admin user={user}/>} />
-          <Route path="/user/create" element={<UserForm user={user}/>} />
-          <Route path="/user/update" element={<UserList user={user}/>} />
-          <Route path="/user/update/:id" element={<UserForm user={user}/>} />
-          <Route path="/machine/:id" element={<Machine user={user}/>} />
-          <Route path="/:details/:id" element={<Detail user={user}/>} />
-          <Route path="/create/:instance" element={<Create user={user}/>} />
-          <Route path="/update/:instance" element={<UpdateList user={user}/>} />
-          <Route path="/update/:instance/:id" element={<Update user={user}/>} />
-          <Route path="/login" element={<LoginPage user={user}/>} />
-          <Route path="/logout" element={<Logout user={user}/>} />
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
+        <div id='body-root'>
+          <Routes>
+            <Route path="/" element={<Home user={user}/>} />
+            <Route path="/admin" element={<Admin user={user}/>} />
+            <Route path="/user/create" element={<UserForm user={user}/>} />
+            <Route path="/user/update" element={<UserList user={user}/>} />
+            <Route path="/user/update/:id" element={<UserForm user={user}/>} />
+            <Route path="/machine/:id" element={<Machine user={user}/>} />
+            <Route path="/:details/:id" element={<Detail user={user}/>} />
+            <Route path="/create/:instance" element={<Create user={user}/>} />
+            <Route path="/update/:instance" element={<UpdateList user={user}/>} />
+            <Route path="/update/:instance/:id" element={<Update user={user}/>} />
+            <Route path="/login" element={<LoginPage user={user}/>} />
+            <Route path="/logout" element={<Logout user={user}/>} />
+            <Route path='*' element={<NotFoundPage />} />
+          </Routes>
+        </div>
         <Footer />
       </BrowserRouter>  
     </div>

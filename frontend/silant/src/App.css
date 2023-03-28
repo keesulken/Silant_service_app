@@ -1,28 +1,96 @@
-.app-header {
-  display: flex;
-  flex-flow: column;
-  background-color: #163E6C;
+body {
+  font-family: 'PT Astra Sans Regular';
 }
 
-.header-top-line {
+#body-root {
+  min-height: 73.8vh;
+  margin: 1.5vh 0;
+  padding: 0 2vw;
+  background-color: #EBE6D6;
+  border: 1px solid black;
+}
+
+.app-header {
+  min-height: 14vh;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  margin: 0 5vw;
+  align-items: center;
+  padding: 0 4vw;
+  font-size: 1.2em;
+  background-color: #163E6C;
+  border: 1px solid black;
 }
 
-.header-bottom-line {
+.header-logo img {
+  width: 50px;
+  height: 50px;
+}
+
+.header-center {
   display: flex;
-  justify-content: center;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
 .app-footer {
-  background-color: #D20A11;
+  min-height: 8vh;
+  background-color: #163E6C;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-around;
+  align-items: center;
+  font-size: 1.2em;
+  border: 1px solid black;
 }
 
-body {
-  background-color: #EBE6D6;
+a {
+  color: black;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #D20A11;
+}
+
+button {
+  font-family: 'PT Astra Sans Bold';
+}
+
+button:hover {
+  background-color: #D20A11;
+}
+
+@font-face {
+  font-family: 'PT Astra Sans Regular';
+  src: url('./fonts/PT-Astra-Sans_Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'PT Astra Sans Bold';
+  src: url('./fonts/PT-Astra-Sans_Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'PT Astra Sans Italic';
+  src: url('./fonts/PT-Astra-Sans_Italic.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'PT Astra Sans Bold Italic';
+  src: url('./fonts/PT-Astra-Sans_Bold-Italic.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
 }
