@@ -289,8 +289,8 @@ export default function MachineForm(props) {
         </select>
       </p>
       <p>
-        <input type='submit' value='Отправить'></input>
-        <input type='reset' value='Сброс' onMouseLeave={dataLoader}></input>
+        <input type='submit' value='Отправить' className='form-button' />
+        <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
       </p>
     </form>  
     )
@@ -364,8 +364,8 @@ export default function MachineForm(props) {
         </select>
       </p>
       <p>
-        <input type='submit' value='Отправить'></input>
-        <input type='reset' value='Сброс'></input>
+        <input type='submit' value='Отправить' className='form-button' />
+        <input type='reset' value='Сброс' className='form-button' />
       </p>
     </form>
     )

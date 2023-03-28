@@ -278,8 +278,8 @@ export default function DirectoryForm(props) {
         <input type='text' name='description' id='description' ></input>
       </p>
       <p>
-        <input type='submit' value='Отправить' />
-        <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
+        <input type='submit' value='Отправить' className='form-button' />
+        <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
       </p>
     </form>
     )
@@ -321,8 +321,8 @@ export default function DirectoryForm(props) {
         <input type='text' name='description' id='description'></input>
       </p>
       <p>
-        <input type='submit' value='Отправить' />
-        <input type='reset' value='Сброс' />
+        <input type='submit' value='Отправить' className='form-button' />
+        <input type='reset' value='Сброс' className='form-button' />
       </p>
     </form>
     )

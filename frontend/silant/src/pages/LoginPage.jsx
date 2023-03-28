@@ -68,8 +68,8 @@ export default function LoginPage(props) {
       { errorBlock }
       <p>Имя пользователя: <input type='text' id='username' /></p>
       <p>Пароль: <input type='password' id='password' /></p>
-      <p><input type='submit' value='Войти' />
-      <input type='reset' value='Сброс' /></p>
+      <p><input type='submit' value='Войти' className='form-button' />
+      <input type='reset' value='Сброс' className='form-button' /></p>
     </form>
   )
 }

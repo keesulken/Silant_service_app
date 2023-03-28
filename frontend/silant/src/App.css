@@ -1,5 +1,6 @@
 body {
   font-family: 'PT Astra Sans Regular';
+  /* width: fit-content; */
 }
 
 #body-root {
@@ -8,6 +9,7 @@ body {
   padding: 0 2vw;
   background-color: #EBE6D6;
   border: 1px solid black;
+  overflow-x: scroll;
 }
 
 .app-header {
@@ -59,12 +61,51 @@ a:hover {
   color: #D20A11;
 }
 
-button {
+button, .form-button {
   font-family: 'PT Astra Sans Bold';
 }
 
-button:hover {
+button:hover, .form-button:hover {
   background-color: #D20A11;
+}
+
+hr {
+  width: auto;
+}
+
+table {
+	width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+table th {
+	font-weight: bold;
+	padding: 5px;
+	background: #D20A11;
+	border: 1px solid black;
+}
+
+table td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+select {
+  font-family: 'PT Astra Sans Regular';
+}
+
+option {
+  font-family: 'PT Astra Sans Italic';
+}
+
+.filter-table table {
+  max-width: 60vw;
+}
+
+.filter-table select {
+  font-size: 1.1em;
 }
 
 @font-face {

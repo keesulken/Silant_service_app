@@ -243,8 +243,8 @@ export default function MaintenanceForm(props) {
           </select>
         </p>
         <p>
-          <input type='submit' value='Отправить' />
-          <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
         </p>
       </form>
     )
@@ -295,8 +295,8 @@ export default function MaintenanceForm(props) {
           </select>
         </p>
         <p>
-          <input type='submit' value='Отправить' />
-          <input type='reset' value='Сброс' />
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' className='form-button' />
         </p>
       </form>
     )

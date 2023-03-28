@@ -15,7 +15,7 @@ export default function ReclamationFilters(props) {
 
   if (props.repairs && props.companies) {
     return (
-      <div id={id}>
+      <div id={id} className='filter-table'>
         <p>Фильтры</p>
         <form id={id + '-form'} encType="multipart/form-data"
         onSubmit={props.handler} >
@@ -59,8 +59,8 @@ export default function ReclamationFilters(props) {
             </tbody>
           </table>
           <p>
-            <input type='submit' value='Применить' />
-            <input type='reset' value='Сброс' />
+            <input type='submit' value='Применить' className='form-button' />
+            <input type='reset' value='Сброс' className='form-button' />
           </p>
         </form>
       </div>

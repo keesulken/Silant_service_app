@@ -159,8 +159,8 @@ export default function UserProfileForm(props) {
           <input type='text' name='description' id='description' ></input>
         </p>
         <p>
-          <input type='submit' value='Отправить' />
-          <input type='reset' value='Сброс' onMouseLeave={dataLoader} />
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
         </p>
       </form>
     )
