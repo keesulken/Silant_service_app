@@ -1,15 +1,14 @@
 body {
   font-family: 'PT Astra Sans Regular';
-  /* width: fit-content; */
+  font-size: 1.3em;
 }
 
 #body-root {
-  min-height: 73.8vh;
+  min-height: 73vh;
   margin: 1.5vh 0;
   padding: 0 2vw;
   background-color: #EBE6D6;
   border: 1px solid black;
-  overflow-x: scroll;
 }
 
 .app-header {
@@ -25,8 +24,8 @@ body {
 }
 
 .header-logo img {
-  width: 50px;
-  height: 50px;
+  width: 5em;
+  height: 5em;
 }
 
 .header-center {
@@ -63,6 +62,10 @@ a:hover {
 
 button, .form-button {
   font-family: 'PT Astra Sans Bold';
+  font-size: 0.9em;
+  min-width: 7vw;
+  min-height: 3vh;
+  margin: 0 0.8vw;
 }
 
 button:hover, .form-button:hover {
@@ -74,10 +77,10 @@ hr {
 }
 
 table {
-	width: 100%;
 	margin-bottom: 20px;
 	border: 1px solid black;
 	border-collapse: collapse;
+  font-size: 1em;
 }
 
 table th {
@@ -101,12 +104,102 @@ option {
 }
 
 .filter-table table {
-  max-width: 60vw;
+  max-width: 50vw;
 }
 
 .filter-table select {
+  width: 10vw;
   font-size: 1.1em;
 }
+
+#machine-table-elem table {
+  font-size: 0.8em;
+  max-width: 97vw;
+}
+
+#machine-table-elem table td {
+  font-size: 1em;
+}
+
+
+@media (min-width: 1921px) and (min-height: 1081px) {
+  #body-root {
+    background-color: aqua;
+  }
+}
+
+@media (max-width: 1660px) {
+  #machine-table-elem table {
+    font-size: 0.7em;
+  }
+  
+  #machine-table-elem table td {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 1440px) {
+  #body-root {
+    overflow-x: auto;
+    background-color: aqua;
+  }
+
+  #machine-table-elem table {
+    font-size: 0.8em;
+  }
+  
+  #machine-table-elem table td {
+    font-size: 1em;
+  }
+}
+
+
+@media (max-width: 1150px) {
+  #reclamation-table-elem table {
+    font-size: 0.8em;
+  }
+  
+  #reclamation-table-elem table td {
+    font-size: 1em;
+  }
+}
+
+
+@media (max-width: 1000px) {
+  #body-root {
+    background-color: darkgoldenrod;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  #machine-table-elem table thead {
+    display: none;
+  }
+
+  #machine-table-elem table tr {
+    display: block;
+    margin-bottom: 3vh;
+  }
+
+  #machine-table-elem table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #machine-table-elem table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+}
+
+
+
+
+
+
 
 @font-face {
   font-family: 'PT Astra Sans Regular';
