@@ -148,21 +148,23 @@ export default function UserProfileForm(props) {
     return <NotFoundPage />
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm}>
+      <>
         { errorBlock }
         { props.type === 'client' && <p>Карточка клиента</p> }
         { props.type === 'company' && <p>Карточка сервисной компании</p> }
-        <p>Название: 
-          <input type='text' name='name' id='name' ></input>
-        </p>
-        <p>Описание: 
-          <input type='text' name='description' id='description' ></input>
-        </p>
-        <p>
-          <input type='submit' value='Отправить' className='form-button' />
-          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
-        </p>
-      </form>
+        <form onSubmit={sendForm} className='creation-form'>
+          <p>Название: 
+            <input type='text' name='name' id='name' ></input>
+          </p>
+          <p>Описание: 
+            <input type='text' name='description' id='description' ></input>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+          </p>
+        </form>
+      </>
     )
   }
 }

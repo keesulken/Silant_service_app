@@ -55,33 +55,33 @@ export default function UserList(props) {
       <div>
         <p>Редактирование учётных данных</p>
         { deleteBlock }
-        <table>
+        <table className='user-update-table'>
           <thead>
             <tr>
               <th>Имя учётной записи</th>
               <th>Тип учётной записи</th>
               <th>Профиль</th>
               <th>Администратор?</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { users.map(user => (
               <tr key={user.id}>
-                <td>{ user.username }</td>
-                <td>{ user.type }</td>
-                { (!user.cl_profile[0] && !user.sc_profile[0]) && <td> - </td> }
+                <td data-label='Имя учётной записи'>{ user.username }</td>
+                <td data-label='Тип учётной записи'>{ user.type }</td>
+                { (!user.cl_profile[0] && !user.sc_profile[0]) && <td data-label='Профиль'> - </td> }
                 { user.cl_profile[0] && 
-                <td><Link to={'/client/' + user.cl_profile[0].pk}
+                <td data-label='Профиль'><Link to={'/client/' + user.cl_profile[0].pk}
                 >{ user.cl_profile[0].name }</Link></td> }
                 { user.sc_profile[0] && 
-                <td><Link to={'/company/' + user.sc_profile[0].pk}
+                <td data-label='Профиль'><Link to={'/company/' + user.sc_profile[0].pk}
                 >{ user.sc_profile[0].name }</Link></td> }
-                { user.is_superuser && <td> Да </td> }
-                { !user.is_superuser && <td> Нет </td> }
-                <td><button onClick={(e) => updateHolder(user.id, e)}>Изменить</button></td>
-                <td><button onClick={(e) => 
+                { user.is_superuser && <td data-label='Администратор?'> Да </td> }
+                { !user.is_superuser && <td data-label='Администратор?'> Нет </td> }
+                <td data-label=' '><button onClick={(e) => updateHolder(user.id, e)}>Изменить</button></td>
+                <td data-label=' '><button onClick={(e) => 
                 deleteHolder(user.id, 'user', 
                 `Пользователя ${user.username}`, e)}>Удалить</button></td>
               </tr>

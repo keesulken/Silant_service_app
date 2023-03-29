@@ -37,26 +37,26 @@ export default function ProfileList() {
     return (
       <div>
         <p>Изменение карточек клиентов</p>
-        <table>
+        <table className='profile-update-table'>
           <thead>
             <tr>
               <th>Учётная запись</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { clients.map(item => (
               <tr key={item.pk}>
-                <td>{ item.user.username }</td>
-                <td><Link to={'/client/' + item.pk}
+                <td data-label='Учётная запись'>{ item.user.username }</td>
+                <td data-label='Название'><Link to={'/client/' + item.pk}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('client', item.pk, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('client', item.pk, e)}
                 >Изменить</button></td>
               </tr>
             )) }
@@ -64,26 +64,26 @@ export default function ProfileList() {
         </table>
         <hr />
         <p>Изменение карточек сервисных организаций</p>
-        <table>
+        <table className='profile-update-table'>
           <thead>
             <tr>
               <th>Учётная запись</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { companies.map(item => (
               <tr key={item.pk}>
-                <td>{ item.user.username }</td>
-                <td><Link to={'/company/' + item.pk}
+                <td data-label='Учётная запись'>{ item.user.username }</td>
+                <td data-label='Название'><Link to={'/company/' + item.pk}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('company', item.pk, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('company', item.pk, e)}
                 >Изменить</button></td>
               </tr>
             )) }

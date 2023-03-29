@@ -50,7 +50,7 @@ export default function Detail() {
     return <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />
   } else {
     return (
-        <div>
+        <div className='detail-page'>
             <h2>{item.type && item.type} {item.name}</h2>
             <p>{item.description}</p>
         </div>

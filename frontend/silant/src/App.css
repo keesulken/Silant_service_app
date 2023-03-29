@@ -4,11 +4,16 @@ body {
 }
 
 #body-root {
-  min-height: 73vh;
+  min-height: 69.2vh;
   margin: 1.5vh 0;
   padding: 0 2vw;
   background-color: #EBE6D6;
   border: 1px solid black;
+}
+
+h3 {
+  text-align: center;
+  margin: 2vh 1vw;
 }
 
 .app-header {
@@ -26,6 +31,7 @@ body {
 .header-logo img {
   width: 5em;
   height: 5em;
+  margin-right: 1vw;
 }
 
 .header-center {
@@ -34,10 +40,15 @@ body {
   align-items: center;
 }
 
+.header-center h2, .header-center p {
+  text-align: center;
+}
+
 .header-right {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  margin-left: 1vw;
 }
 
 .app-footer {
@@ -49,6 +60,16 @@ body {
   align-items: center;
   font-size: 1.2em;
   border: 1px solid black;
+}
+
+.detail-page {
+  text-align: center;
+  margin-top: 20vh;
+}
+
+.unauth-search input {
+  font-size: 1em;
+  font-family: 'PT Astra Sans Regular';
 }
 
 a {
@@ -108,7 +129,7 @@ option {
 }
 
 .filter-table select {
-  width: 10vw;
+  width: 100%;
   font-size: 1.1em;
 }
 
@@ -121,12 +142,61 @@ option {
   font-size: 1em;
 }
 
-
-@media (min-width: 1921px) and (min-height: 1081px) {
-  #body-root {
-    background-color: aqua;
-  }
+.logout-page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20vh;
 }
+
+.login-page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  text-align: center;
+  font-size: 1.3em;
+  background-color: #d4c383;
+  margin: 20vh 30vw;
+}
+
+.login-page p {
+  margin: 1vh;
+}
+
+.login-page input {
+  font-family: 'PT Astra Sans Regular';
+  font-size: 1em;
+}
+
+.controls p {
+  max-width: 55vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.creation-form * {
+  display: flex;
+  justify-content: space-between;
+  margin: 1vh 10vw;
+}
+
+.creation-form input, .creation-form select {
+  min-width: 20vw;
+  font-size: 1em;
+}
+
+.form-controls {
+  display: inline-flex;
+}
+
+.form-controls * {
+  margin: 1vh 1vw;
+  min-width: auto;
+}
+
+
+
 
 @media (max-width: 1660px) {
   #machine-table-elem table {
@@ -136,12 +206,15 @@ option {
   #machine-table-elem table td {
     font-size: 0.9em;
   }
+
+  .reclamation-update-table {
+    font-size: 0.9em;
+  }
 }
 
 @media (max-width: 1440px) {
   #body-root {
     overflow-x: auto;
-    background-color: aqua;
   }
 
   #machine-table-elem table {
@@ -150,6 +223,18 @@ option {
   
   #machine-table-elem table td {
     font-size: 1em;
+  }
+
+  .filter-table table {
+    max-width: 75vw;
+  }
+
+  .machine-update-table {
+    font-size: 0.8em;
+  }
+
+  .reclamation-update-table {
+    font-size: 0.7em;
   }
 }
 
@@ -162,14 +247,38 @@ option {
   #reclamation-table-elem table td {
     font-size: 1em;
   }
+
+  .filter-table table {
+    max-width: 85vw;
+  }
+
+  .controls p {
+    max-width: 65vw;
+  }
+
+  .machine-update-table {
+    font-size: 0.7em;
+  }
+
+  .maintenance-update-table {
+    font-size: 0.9em;
+  }
+
+  .reclamation-update-table {
+    font-size: 0.6em;
+  }
+
+  .user-update-table {
+    font-size: 0.9em;
+  }
+
+  .unauth-machine table {
+    font-size: 0.8em;
+  }
 }
 
 
 @media (max-width: 1000px) {
-  #body-root {
-    background-color: darkgoldenrod;
-  }
-
   h2 {
     font-size: 1.2em;
   }
@@ -178,9 +287,13 @@ option {
     display: none;
   }
 
+  #machine-table-elem table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
   #machine-table-elem table tr {
     display: block;
-    margin-bottom: 3vh;
+    width: 96vw;
   }
 
   #machine-table-elem table td {
@@ -193,12 +306,505 @@ option {
     margin-right: 20px;
     font-family: 'PT Astra Sans Bold';
   }
+
+  .filter-table table {
+    max-width: 96vw;
+  }
+
+  .machine-update-table {
+    font-size: 0.6em;
+  }
+
+  .maintenance-update-table {
+    font-size: 0.8em;
+  }
+
+  .reclamation-update-table {
+    font-size: 1em;
+  }
+
+  .reclamation-update-table thead {
+    display: none;
+  }
+
+  .reclamation-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .reclamation-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .reclamation-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .reclamation-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
 }
 
 
+@media (max-width: 950px) {
+  #reclamation-table-elem table {
+    font-size: 0.7em;
+  }
+  
+  #reclamation-table-elem table td {
+    font-size: 0.9em;
+  }
+
+  .login-page {
+    font-size: 1.1em;
+    margin: 20vh 25vw;
+  }
+
+  .login-page input {
+    font-size: 0.8em;
+  }
+
+  .controls p {
+    max-width: 85vw;
+  }
+
+  .machine-update-table {
+    font-size: 1em;
+  }
+
+  .machine-update-table thead {
+    display: none;
+  }
+
+  .machine-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .machine-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .machine-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .machine-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .maintenance-update-table {
+    font-size: 0.7em;
+  }
+
+  .user-update-table {
+    font-size: 0.8em;
+  }
+
+  .unauth-machine table {
+    font-size: 1em;
+  }
+
+  .unauth-machine table thead {
+    display: none;
+  }
+
+  .unauth-machine table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .unauth-machine table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .unauth-machine table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .unauth-machine table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+}
 
 
+@media (max-width: 830px) {
+  p {
+    text-align: center;
+  }
 
+  #reclamation-table-elem table thead {
+    display: none;
+  }
+
+  #reclamation-table-elem table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  #reclamation-table-elem table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  #reclamation-table-elem table td {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2em;
+  }
+
+  #reclamation-table-elem table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  #maintenance-table-elem table {
+    font-size: 0.8em;
+  }
+  
+  #maintenance-table-elem table td {
+    font-size: 0.9em;
+  }
+
+  .controls p {
+    max-width: 96vw;
+  }
+
+  .creation-form * {
+    margin: 1vh 7vw;
+    font-size: 0.9em;
+  }
+
+  .creation-form input, .creation-form select {
+    min-width: 12vw;
+    font-size: 1em;
+  }
+
+  .maintenance-update-table {
+    font-size: 1em;
+  }
+
+  .maintenance-update-table thead {
+    display: none;
+  }
+
+  .maintenance-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .maintenance-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .maintenance-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .maintenance-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .user-update-table {
+    font-size: 0.7em;
+  }
+}
+
+
+@media (max-width: 660px) {
+  #maintenance-table-elem table thead {
+    display: none;
+  }
+
+  #maintenance-table-elem table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  #maintenance-table-elem table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  #maintenance-table-elem table td {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2em;
+  }
+
+  #maintenance-table-elem table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .filter-table table thead {
+    display: none;
+  }
+
+  .filter-table table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .filter-table table td {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+  }
+
+  .filter-table table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .filter-table select {
+    max-width: 50vw;
+  }
+
+  .controls p {
+    font-size: 0.8em;
+  }
+
+  .creation-form * {
+    margin: 1vh 5vw;
+    font-size: 0.8em;
+  }
+
+  .creation-form input, .creation-form select {
+    min-width: 9vw;
+    font-size: 0.9em;
+  }
+
+  .machine-update-table {
+    font-size: 0.9em;
+  }
+
+  .maintenance-update-table {
+    font-size: 0.9em;
+  }
+
+  .reclamation-update-table {
+    font-size: 0.9em;
+  }
+
+  .directory-update-table {
+    font-size: 0.8em;
+  }
+
+  .profile-update-table {
+    font-size: 0.8em;
+  }
+
+  .user-update-table {
+    font-size: 1em;
+  }
+
+  .user-update-table thead {
+    display: none;
+  }
+
+  .user-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .user-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .user-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .user-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+}
+
+@media (max-width: 580px) {
+  .filter-table table td::before {
+    font-size: 0.9em;
+  }
+
+  .filter-table select {
+    font-size: 0.9em;
+  }
+
+  #machine-table-elem table td {
+    font-size: 0.9em;
+  }
+
+  #maintenance-table-elem table td {
+    font-size: 1em;
+  }
+
+  #reclamation-table-elem table td {
+    font-size: 1em;
+  }
+
+  .app-header, .app-footer {
+    font-size: 0.9em;
+  }
+
+  .login-page {
+    margin: 20vh 17vw;
+  }
+
+  .controls p {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .machine-update-table {
+    font-size: 0.8em;
+  }
+
+  .maintenance-update-table {
+    font-size: 0.8em;
+  }
+
+  .reclamation-update-table {
+    font-size: 0.8em;
+  }
+
+  .directory-update-table {
+    font-size: 0.9em;
+  }
+
+  .directory-update-table thead {
+    display: none;
+  }
+
+  .directory-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .directory-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .directory-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .directory-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .profile-update-table {
+    font-size: 0.9em;
+  }
+
+  .profile-update-table thead {
+    display: none;
+  }
+
+  .profile-update-table tr:nth-child(even) {
+    background-color: #d4c383;
+  }
+
+  .profile-update-table tr {
+    display: block;
+    width: 96vw;
+  }
+
+  .profile-update-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .profile-update-table td::before {
+    content: attr(data-label);
+    margin-right: 20px;
+    font-family: 'PT Astra Sans Bold';
+  }
+
+  .user-update-table {
+    font-size: 0.8em;
+  }
+
+  .unauth-machine table {
+    font-size: 0.8em;
+  }
+}
+
+
+@media (max-width: 420px) {
+  p {
+    font-size: 0.9em;
+  }
+
+  .app-header, .app-footer {
+    font-size: 0.8em;
+  }
+
+  .header-logo img {
+    width: 4em;
+    height: 4em;
+  }
+
+  #maintenance-table-elem table td {
+    font-size: 0.9em;
+  }
+
+  .creation-form * {
+    margin: 1vh 2vw;
+    font-size: 0.8em;
+  }
+
+  .creation-form input, .creation-form select {
+    min-width: 7vw;
+    font-size: 0.8em;
+  }
+
+  .machine-update-table {
+    font-size: 0.7em;
+  }
+
+  .maintenance-update-table {
+    font-size: 0.7em;
+  }
+
+  .reclamation-update-table {
+    font-size: 0.7em;
+  }
+
+  .directory-update-table {
+    font-size: 0.8em;
+  }
+
+  .profile-update-table {
+    font-size: 0.8em;
+  }
+
+  .user-update-table {
+    font-size: 0.7em;
+  }
+
+  .detail-page h2 {
+    font-size: 0.9em;
+  }
+}
 
 
 @font-face {

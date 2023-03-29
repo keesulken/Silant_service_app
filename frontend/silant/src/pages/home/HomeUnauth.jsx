@@ -69,8 +69,8 @@ export default function HomeUnauth() {
     <div>
         <p>Проверьте комплектацию и технические характеристики техники Силант</p>
         { errorBlock }
-        <p><input type='text' id='factory-num' />
-        <button onClick={handleClick}>search</button></p>
+        <p className='unauth-search'><input type='text' id='factory-num' />
+        <button onClick={handleClick}>Поиск</button></p>
         <hr />
         <UnauthMachine machine={machine} />
     </div>

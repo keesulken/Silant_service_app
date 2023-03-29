@@ -189,116 +189,120 @@ export default function MaintenanceForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm} encType="multipart/form-data">
+      <>
         <p>Редактирование данных о ТО</p>
         { errorBlock }
-        <p>Вид ТО:
-          <select name='mt-type'>
-            <option>{ instance.type.name }</option>
-            { repairs.filter(item => (
-              item.type === 'MNT' && item.name !== instance.type.name
-            )).map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Дата проведения ТО:
-          <input type='date' name='mt-date' id='mt-date' />
-        </p>
-        <p>Наработка, м/час:
-          <input type='text' name='mt-time' id='mt-time' />
-        </p>
-        <p>№ заказ-наряда:
-          <input type='text' name='work-order-num' 
-          id='work-order-num' />
-        </p>
-        <p>Дата заказ-наряда:
-          <input type='date' name='work-order-date' 
-          id='work-order-date' />
-        </p>
-        <p>Организация, проводившая ТО:
-          <select name='mt-holder'>
-            <option>{ instance.maintenance_holder.name }</option>
-            { repairs.filter(item => (
-            item.type === 'MTH' && item.name !== instance.type.name
-            )).map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Машина:
-          <select name='machine'>
-            <option>{ instance.machine.factory_number }</option>
-            { machines.filter(item => 
-            item.factory_number !== instance.machine.factory_number)
-            .map(item => 
-            <option key={item.id}>{ item.factory_number }</option>) }
-          </select>
-        </p>
-        <p>Сервисная компания:
-          <select name='company'>
-            <option>{ instance.service_company.name }</option>
-            { companies.filter(item => 
-            item.name !== instance.service_company.name)
-            .map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>
-          <input type='submit' value='Отправить' className='form-button' />
-          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
-        </p>
-      </form>
+        <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>
+          <p>Вид ТО:
+            <select name='mt-type'>
+              <option>{ instance.type.name }</option>
+              { repairs.filter(item => (
+                item.type === 'MNT' && item.name !== instance.type.name
+              )).map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Дата проведения ТО:
+            <input type='date' name='mt-date' id='mt-date' />
+          </p>
+          <p>Наработка, м/час:
+            <input type='text' name='mt-time' id='mt-time' />
+          </p>
+          <p>№ заказ-наряда:
+            <input type='text' name='work-order-num' 
+            id='work-order-num' />
+          </p>
+          <p>Дата заказ-наряда:
+            <input type='date' name='work-order-date' 
+            id='work-order-date' />
+          </p>
+          <p>Организация, проводившая ТО:
+            <select name='mt-holder'>
+              <option>{ instance.maintenance_holder.name }</option>
+              { repairs.filter(item => (
+              item.type === 'MTH' && item.name !== instance.type.name
+              )).map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Машина:
+            <select name='machine'>
+              <option>{ instance.machine.factory_number }</option>
+              { machines.filter(item => 
+              item.factory_number !== instance.machine.factory_number)
+              .map(item => 
+              <option key={item.id}>{ item.factory_number }</option>) }
+            </select>
+          </p>
+          <p>Сервисная компания:
+            <select name='company'>
+              <option>{ instance.service_company.name }</option>
+              { companies.filter(item => 
+              item.name !== instance.service_company.name)
+              .map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+          </p>
+        </form>
+      </>
     )
   } else {
     
     
     
     return (
-      <form onSubmit={sendForm} encType="multipart/form-data">
+      <>
         <p>Создание новой записи ТО</p>
         { errorBlock }
-        <p>Вид ТО:
-          <select name='mt-type'>
-            { repairs.filter(item => (item.type === 'MNT'
-            )).map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Дата проведения ТО:
-          <input type='date' name='mt-date' id='mt-date' />
-        </p>
-        <p>Наработка, м/час:
-          <input type='text' name='mt-time' id='mt-time' />
-        </p>
-        <p>№ заказ-наряда:
-          <input type='text' name='work-order-num' id='work-order-num' />
-        </p>
-        <p>Дата заказ-наряда:
-          <input type='date' name='work-order-date' id='work-order-date' />
-        </p>
-        <p>Организация, проводившая ТО:
-          <select name='mt-holder'>
-            { repairs.filter(item => (item.type === 'MTH'
-            )).map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Машина:
-          <select name='machine'>
-            { machines.map(item => 
-            <option key={item.id}>{ item.factory_number }</option>) }
-          </select>
-        </p>
-        <p>Сервисная компания:
-          <select name='company'>
-            { companies.map(item => 
-            <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>
-          <input type='submit' value='Отправить' className='form-button' />
-          <input type='reset' value='Сброс' className='form-button' />
-        </p>
-      </form>
+        <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>
+          <p>Вид ТО:
+            <select name='mt-type'>
+              { repairs.filter(item => (item.type === 'MNT'
+              )).map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Дата проведения ТО:
+            <input type='date' name='mt-date' id='mt-date' />
+          </p>
+          <p>Наработка, м/час:
+            <input type='text' name='mt-time' id='mt-time' />
+          </p>
+          <p>№ заказ-наряда:
+            <input type='text' name='work-order-num' id='work-order-num' />
+          </p>
+          <p>Дата заказ-наряда:
+            <input type='date' name='work-order-date' id='work-order-date' />
+          </p>
+          <p>Организация, проводившая ТО:
+            <select name='mt-holder'>
+              { repairs.filter(item => (item.type === 'MTH'
+              )).map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Машина:
+            <select name='machine'>
+              { machines.map(item => 
+              <option key={item.id}>{ item.factory_number }</option>) }
+            </select>
+          </p>
+          <p>Сервисная компания:
+            <select name='company'>
+              { companies.map(item => 
+              <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' className='form-button' />
+          </p>
+        </form>
+      </>
     )
   }
 }

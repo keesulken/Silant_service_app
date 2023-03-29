@@ -29,7 +29,7 @@ export default function ReclamationFilters(props) {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td data-label='Узел отказа'>
                   <select name='unt-filter'>
                     <option>-----</option>
                     { props.repairs.filter(item => item.type === 'UNT')
@@ -38,7 +38,7 @@ export default function ReclamationFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Способ восстановления'>
                   <select name='rpt-filter'>
                     <option>-----</option>
                     { props.repairs.filter(item => item.type === 'RPT')
@@ -47,7 +47,7 @@ export default function ReclamationFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Сервисная компания'>
                   <select name='recl-sc-filter'>
                     <option>-----</option>
                     { props.companies.map(item => (

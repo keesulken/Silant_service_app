@@ -7,7 +7,7 @@ import logo from '../../pics/logo-red.jpg';
 export default function Header(props) {
   return (
     <div className='app-header'>
-      <div className='header-logo'><img src={logo} /></div>
+      <div className='header-logo'><Link to={'/'}><img src={logo} /></Link></div>
       <div className='header-center'>
         <p className='contacts'>+7-8352-20-12-09, 
         <a href='https://desktop.telegram.org'> Telegram</a></p>

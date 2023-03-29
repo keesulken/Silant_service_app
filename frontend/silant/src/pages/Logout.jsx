@@ -39,7 +39,7 @@ export default function Logout(props) {
     return <ErrorBlock error={'Неизвестная ошибка, попробуйте позже'} />
   } else {
     return (
-      <div>
+      <div className='logout-page'>
         <h2>Вы действительно хотите выйти?</h2>
         <button onClick={handleClick}>Выйти</button>
       </div>

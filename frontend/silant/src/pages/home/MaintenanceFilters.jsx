@@ -29,7 +29,7 @@ export default function MaintenanceFilters(props) {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td data-label='Вид ТО'>
                   <select name='mnt-filter'>
                     <option>-----</option>
                     { props.repairs.filter(item => item.type === 'MNT')
@@ -38,7 +38,7 @@ export default function MaintenanceFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Зав. № машины'>
                   <select name='mt-machine-filter'>
                     <option>-----</option>
                     { props.machines.map(item => (
@@ -46,7 +46,7 @@ export default function MaintenanceFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Сервисная компания'>
                   <select name='mt-sc-filter'>
                     <option>-----</option>
                     { props.companies.map(item => (

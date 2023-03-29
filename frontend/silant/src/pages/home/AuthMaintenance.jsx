@@ -33,17 +33,19 @@ export default function AuthMaintenance(props) {
             <tbody>
               { props.maintenance.map(item => (
                 <tr key={item.id}>
-                  <td><Link to={'/repair/' + item.type.pk }
+                  <td data-label='Вид ТО'><Link to={'/repair/' + item.type.pk }
                   >{ item.type.name }</Link></td>
-                  <td>{ item.date }</td>
-                  <td>{ item.operating_time }</td>
-                  <td>{ item.work_order_number }</td>
-                  <td>{ item.work_order_date }</td>
-                  <td><Link to={'/repair/' + item.maintenance_holder.pk }
+                  <td data-label='Дата проведения ТО'>{ item.date }</td>
+                  <td data-label='Наработка, м/час'>{ item.operating_time }</td>
+                  <td data-label='№ заказ-наряда'>{ item.work_order_number }</td>
+                  <td data-label='Дата заказ-наряда'>{ item.work_order_date }</td>
+                  <td data-label='Организация, проводившая ТО'
+                  ><Link to={'/repair/' + item.maintenance_holder.pk }
                   >{ item.maintenance_holder.name }</Link></td>
-                  <td><Link to={'/machine/' + item.machine.pk }
+                  <td data-label='Машина'><Link to={'/machine/' + item.machine.pk }
                   >{ item.machine.factory_number }</Link></td>
-                  <td><Link to={'/company/' + item.service_company.pk }
+                  <td data-label='Сервисная компания'
+                  ><Link to={'/company/' + item.service_company.pk }
                   >{ item.service_company.name }</Link></td>
                 </tr>
               ))}

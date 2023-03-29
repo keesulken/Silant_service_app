@@ -5,7 +5,7 @@ export default function UnauthMachine(props) {
   if (props.machine) {
     let machine = props.machine;
     return (
-        <div>
+        <div className='unauth-machine'>
             <p>Результат поиска</p>
             <p>Информация о технике</p>
             <table>
@@ -25,21 +25,24 @@ export default function UnauthMachine(props) {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{ machine.factory_number }</td>
-                        <td><Link to={'/unit/' + machine.machine_model.pk}
+                        <td data-label='Зав. № машины'>{ machine.factory_number }</td>
+                        <td data-label='Модель техники'><Link to={'/unit/' + machine.machine_model.pk}
                         >{ machine.machine_model.name }</Link></td>
-                        <td><Link to={'/unit/' + machine.engine_model.pk}
+                        <td data-label='Модель двигателя'><Link to={'/unit/' + machine.engine_model.pk}
                         >{ machine.engine_model.name }</Link></td>
-                        <td>{ machine.engine_number }</td>
-                        <td><Link to={'/unit/' + machine.transmission_model.pk}
+                        <td data-label='Зав. № двигателя'>{ machine.engine_number }</td>
+                        <td data-label='Модель трансмиссии'
+                        ><Link to={'/unit/' + machine.transmission_model.pk}
                         >{ machine.transmission_model.name }</Link></td>
-                        <td>{ machine.transmission_number }</td>
-                        <td><Link to={'/unit/' + machine.drive_axle_model.pk}
+                        <td data-label='Зав. № трансмиссии'>{ machine.transmission_number }</td>
+                        <td data-label='Модель ведущего моста'
+                        ><Link to={'/unit/' + machine.drive_axle_model.pk}
                         >{ machine.drive_axle_model.name }</Link></td>
-                        <td>{ machine.drive_axle_number }</td>
-                        <td><Link to={'/unit/' + machine.steered_axle_model.pk}
+                        <td data-label='Зав. № ведущего моста'>{ machine.drive_axle_number }</td>
+                        <td data-label='Модель управляемого моста'
+                        ><Link to={'/unit/' + machine.steered_axle_model.pk}
                         >{ machine.steered_axle_model.name }</Link></td>
-                        <td>{ machine.steered_axle_number }</td>
+                        <td data-label='Зав. № управляемого моста'>{ machine.steered_axle_number }</td>
                     </tr>
                 </tbody>
             </table>

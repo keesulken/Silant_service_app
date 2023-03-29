@@ -13,7 +13,7 @@ export default function HomeControls(props) {
     }
 
   return (
-    <div>
+    <div className='controls'>
         { props.user.type === 'MNU' && <p>Управление записями: 
             <button onClick={(e) => create('maintenance', e)}>Создать ТО</button>
             <button onClick={(e) => update('maintenance', e)}>Редактировать ТО</button>

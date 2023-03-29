@@ -191,183 +191,187 @@ export default function MachineForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm} encType="multipart/form-data">
-      <p>Редактирование записи о машине</p>
-      { errorBlock }
-      <p>Зав. № машины: <input type='text' name='serial' 
-      id='serial' /></p>
-      <p>Модель техники: 
-        <select name='tech-model'>
-          <option>{ instance.machine_model.name }</option>
-          { units.filter(unit => 
-          unit.type === 'MCN' && unit.name !== instance.machine_model.name)
-          .map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>)) }
-        </select>
-      </p>
-      <p>Модель двигателя: 
-        <select name='eng-model'>
-          <option>{ instance.engine_model.name }</option>
-          { units.filter(unit => 
-          unit.type === 'ENG' && unit.name !== instance.engine_model.name)
-          .map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>)) }
-        </select>
-      </p>
-      <p>Зав. № двигателя: <input type='text' name='engine' 
-      id='engine' /></p>
-      <p>Модель трансмиссии: 
-        <select name='trm-model'>
-          <option>{ instance.transmission_model.name }</option>
-          { units.filter(unit => 
-          unit.type === 'TRM' && unit.name !== instance.transmission_model.name)
-          .map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>)) }
-        </select>
-      </p>
-      <p>Зав. № трансмиссии: <input type='text' name='transmission' 
-      id='transmission' /></p>
-      <p>Модель ведущего моста: 
-        <select name='dra-model'>
-          <option>{ instance.drive_axle_model.name }</option>
-          { units.filter(unit => 
-          unit.type === 'DRA' && unit.name !== instance.drive_axle_model.name)
-          .map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>)) }
-        </select>
-      </p>
-      <p>Зав. № ведущего моста: <input type='text' name='drive' 
-      id='drive' /></p>
-      <p>Модель управляемого моста: 
-        <select name='sta-model'>
-          <option>{ instance.steered_axle_model.name }</option>
-          { units.filter(unit => 
-          unit.type === 'STA' && unit.name !== instance.steered_axle_model.name)
-          .map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>)) }
-        </select>
-      </p>
-      <p>Зав. № управляемого моста: <input type='text' name='steered' 
-      id='steered' /></p>
-      <p>Договор поставки №, дата: <input type='text' name='supply' 
-      id='supply' /></p>
-      <p>Дата отгрузки с завода: <input type='date' name='dispatch' 
-      id='dispatch' /></p>
-      <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee' 
-      id='consignee' /></p>
-      <p>Адрес поставки (эксплуатации): <input type='text' name='address' 
-      id='address' /></p>
-      <p>Комплектация (доп. опции): <input type='text' name='equipment' 
-      id='equipment' /></p>
-      <p>Клиент: 
-        <select name='client'>
-          { instance.client && <option>{ instance.client.name }</option> }
-          { instance.client && clients.filter(client => 
-          client.name !== instance.client.name).map(client => (
-          <option key={client.pk}>{ client.name }</option>)) }
-          { instance.client && <option>-----</option> }
-          { !instance.client && <option>-----</option> }
-          { !instance.client &&  clients.map(client => (
-            <option key={client.pk}>{ client.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Сервисная компания: 
-        <select name='company'>
-          { instance.service_company && 
-          <option>{ instance.service_company.name }</option> }
-          { instance.service_company && 
-          companies.filter(company => 
-          company.name !== instance.service_company.name)
-          .map(company => (
-          <option key={company.pk}>{ company.name }</option>)) }
-          { instance.service_company && <option>-----</option> }
-          { !instance.service_company && <option>-----</option> }
-          { !instance.service_company && companies.map(company => (
-            <option key={company.pk}>{ company.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>
-        <input type='submit' value='Отправить' className='form-button' />
-        <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
-      </p>
-    </form>  
+      <>
+        <p>Редактирование записи о машине</p>
+        { errorBlock }
+        <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>
+        <p>Зав. № машины: <input type='text' name='serial' 
+        id='serial' /></p>
+        <p>Модель техники: 
+          <select name='tech-model'>
+            <option>{ instance.machine_model.name }</option>
+            { units.filter(unit => 
+            unit.type === 'MCN' && unit.name !== instance.machine_model.name)
+            .map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>)) }
+          </select>
+        </p>
+        <p>Модель двигателя: 
+          <select name='eng-model'>
+            <option>{ instance.engine_model.name }</option>
+            { units.filter(unit => 
+            unit.type === 'ENG' && unit.name !== instance.engine_model.name)
+            .map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>)) }
+          </select>
+        </p>
+        <p>Зав. № двигателя: <input type='text' name='engine' 
+        id='engine' /></p>
+        <p>Модель трансмиссии: 
+          <select name='trm-model'>
+            <option>{ instance.transmission_model.name }</option>
+            { units.filter(unit => 
+            unit.type === 'TRM' && unit.name !== instance.transmission_model.name)
+            .map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>)) }
+          </select>
+        </p>
+        <p>Зав. № трансмиссии: <input type='text' name='transmission' 
+        id='transmission' /></p>
+        <p>Модель ведущего моста: 
+          <select name='dra-model'>
+            <option>{ instance.drive_axle_model.name }</option>
+            { units.filter(unit => 
+            unit.type === 'DRA' && unit.name !== instance.drive_axle_model.name)
+            .map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>)) }
+          </select>
+        </p>
+        <p>Зав. № ведущего моста: <input type='text' name='drive' 
+        id='drive' /></p>
+        <p>Модель управляемого моста: 
+          <select name='sta-model'>
+            <option>{ instance.steered_axle_model.name }</option>
+            { units.filter(unit => 
+            unit.type === 'STA' && unit.name !== instance.steered_axle_model.name)
+            .map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>)) }
+          </select>
+        </p>
+        <p>Зав. № управляемого моста: <input type='text' name='steered' 
+        id='steered' /></p>
+        <p>Договор поставки №, дата: <input type='text' name='supply' 
+        id='supply' /></p>
+        <p>Дата отгрузки с завода: <input type='date' name='dispatch' 
+        id='dispatch' /></p>
+        <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee' 
+        id='consignee' /></p>
+        <p>Адрес поставки (эксплуатации): <input type='text' name='address' 
+        id='address' /></p>
+        <p>Комплектация (доп. опции): <input type='text' name='equipment' 
+        id='equipment' /></p>
+        <p>Клиент: 
+          <select name='client'>
+            { instance.client && <option>{ instance.client.name }</option> }
+            { instance.client && clients.filter(client => 
+            client.name !== instance.client.name).map(client => (
+            <option key={client.pk}>{ client.name }</option>)) }
+            { instance.client && <option>-----</option> }
+            { !instance.client && <option>-----</option> }
+            { !instance.client &&  clients.map(client => (
+              <option key={client.pk}>{ client.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Сервисная компания: 
+          <select name='company'>
+            { instance.service_company && 
+            <option>{ instance.service_company.name }</option> }
+            { instance.service_company && 
+            companies.filter(company => 
+            company.name !== instance.service_company.name)
+            .map(company => (
+            <option key={company.pk}>{ company.name }</option>)) }
+            { instance.service_company && <option>-----</option> }
+            { !instance.service_company && <option>-----</option> }
+            { !instance.service_company && companies.map(company => (
+              <option key={company.pk}>{ company.name }</option>
+            )) }
+          </select>
+        </p>
+        <p className='form-controls'>
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+        </p>
+      </form>  
+    </>
     )
   } else {
     
     
     
     return (
-    <form onSubmit={sendForm} encType="multipart/form-data">
+    <>
       <p>Создание новой записи о машине</p>
       { errorBlock }
-      <p>Зав. № машины: <input type='text' name='serial' ></input></p>
-      <p>Модель техники: 
-        <select name='tech-model'>
-          { units.filter(unit => unit.type === 'MCN').map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Модель двигателя: 
-        <select name='eng-model'>
-          { units.filter(unit => unit.type === 'ENG').map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Зав. № двигателя: <input type='text' name='engine'></input></p>
-      <p>Модель трансмиссии: 
-        <select name='trm-model'>
-          { units.filter(unit => unit.type === 'TRM').map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Зав. № трансмиссии: <input type='text' name='transmission'></input></p>
-      <p>Модель ведущего моста: 
-        <select name='dra-model'>
-          { units.filter(unit => unit.type === 'DRA').map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Зав. № ведущего моста: <input type='text' name='drive'></input></p>
-      <p>Модель управляемого моста: 
-        <select name='sta-model'>
-          { units.filter(unit => unit.type === 'STA').map(unit => (
-            <option key={unit.pk}>{ unit.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Зав. № управляемого моста: <input type='text' name='steered'></input></p>
-      <p>Договор поставки №, дата: <input type='text' name='supply'></input></p>
-      <p>Дата отгрузки с завода: <input type='date' name='dispatch'></input></p>
-      <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee'></input></p>
-      <p>Адрес поставки (эксплуатации): <input type='text' name='address'></input></p>
-      <p>Комплектация (доп. опции): <input type='text' name='equipment'></input></p>
-      <p>Клиент: 
-        <select name='client'>
-          <option>-----</option>
-          { clients.map(client => (
-            <option key={client.pk}>{ client.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>Сервисная компания: 
-        <select name='company'>
-          <option>-----</option>
-          { companies.map(company => (
-            <option key={company.pk}>{ company.name }</option>
-          )) }
-        </select>
-      </p>
-      <p>
-        <input type='submit' value='Отправить' className='form-button' />
-        <input type='reset' value='Сброс' className='form-button' />
-      </p>
-    </form>
+      <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>  
+        <p>Зав. № машины: <input type='text' name='serial' ></input></p>
+        <p>Модель техники: 
+          <select name='tech-model'>
+            { units.filter(unit => unit.type === 'MCN').map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Модель двигателя: 
+          <select name='eng-model'>
+            { units.filter(unit => unit.type === 'ENG').map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Зав. № двигателя: <input type='text' name='engine'></input></p>
+        <p>Модель трансмиссии: 
+          <select name='trm-model'>
+            { units.filter(unit => unit.type === 'TRM').map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Зав. № трансмиссии: <input type='text' name='transmission'></input></p>
+        <p>Модель ведущего моста: 
+          <select name='dra-model'>
+            { units.filter(unit => unit.type === 'DRA').map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Зав. № ведущего моста: <input type='text' name='drive'></input></p>
+        <p>Модель управляемого моста: 
+          <select name='sta-model'>
+            { units.filter(unit => unit.type === 'STA').map(unit => (
+              <option key={unit.pk}>{ unit.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Зав. № управляемого моста: <input type='text' name='steered'></input></p>
+        <p>Договор поставки №, дата: <input type='text' name='supply'></input></p>
+        <p>Дата отгрузки с завода: <input type='date' name='dispatch'></input></p>
+        <p>Грузополучатель (конечный потребитель): <input type='text' name='consignee'></input></p>
+        <p>Адрес поставки (эксплуатации): <input type='text' name='address'></input></p>
+        <p>Комплектация (доп. опции): <input type='text' name='equipment'></input></p>
+        <p>Клиент: 
+          <select name='client'>
+            <option>-----</option>
+            { clients.map(client => (
+              <option key={client.pk}>{ client.name }</option>
+            )) }
+          </select>
+        </p>
+        <p>Сервисная компания: 
+          <select name='company'>
+            <option>-----</option>
+            { companies.map(company => (
+              <option key={company.pk}>{ company.name }</option>
+            )) }
+          </select>
+        </p>
+        <p className='form-controls'>
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' className='form-button' />
+        </p>
+      </form>
+    </>
     )
   }
 }

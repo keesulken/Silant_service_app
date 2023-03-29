@@ -31,7 +31,7 @@ export default function MachineFilters(props) {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td data-label='Модель техники'>
                   <select name='mcn-filter'>
                     <option>-----</option>
                     { props.units.filter(item => item.type === 'MCN')
@@ -40,7 +40,7 @@ export default function MachineFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Модель двигателя'>
                   <select name='eng-filter'>
                     <option>-----</option>
                     { props.units.filter(item => item.type === 'ENG')
@@ -49,7 +49,7 @@ export default function MachineFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Модель трансмиссии'>
                   <select name='trm-filter'>
                     <option>-----</option>
                     { props.units.filter(item => item.type === 'TRM')
@@ -58,7 +58,7 @@ export default function MachineFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Модель ведущего моста'>
                   <select name='dra-filter'>
                     <option>-----</option>
                     { props.units.filter(item => item.type === 'DRA')
@@ -67,7 +67,7 @@ export default function MachineFilters(props) {
                       )) }
                   </select>
                 </td>
-                <td>
+                <td data-label='Модель управляемого моста'>
                   <select name='sta-filter'>
                     <option>-----</option>
                     { props.units.filter(item => item.type === 'STA')

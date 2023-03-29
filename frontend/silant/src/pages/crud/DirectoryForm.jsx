@@ -256,75 +256,79 @@ export default function DirectoryForm(props) {
     return <NotFoundPage />
   } else if (instance && instance !== 404) {
     return (
-    <form onSubmit={sendForm} encType="multipart/form-data">
-      <p>Редактирование справочника</p>
-      { props.type === 'unit' && <p>Справочник агрегатов</p> }
-      { props.type === 'repair' && <p>Справочник по обслуживанию</p> }
-      { errorBlock }
-      <p id='p-dir-type' style={{display: 'block'}}>Тип справочника:
-        <select name='type'>
-          { props.type === 'unit' && units.map((unit, index) => (
-            <option key={index}>{ unit }</option>
-          )) }
-          { props.type === 'repair' && repairs.map((repair, index) => (
-            <option key={index}>{ repair }</option>
-          )) }
-        </select>
-      </p>
-      <p>Название: 
-        <input type='text' name='name' id='name' ></input>
-      </p>
-      <p>Описание: 
-        <input type='text' name='description' id='description' ></input>
-      </p>
-      <p>
-        <input type='submit' value='Отправить' className='form-button' />
-        <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
-      </p>
-    </form>
+      <>
+        <p>Редактирование справочника</p>
+        { props.type === 'unit' && <p>Справочник агрегатов</p> }
+        { props.type === 'repair' && <p>Справочник по обслуживанию</p> }
+        { errorBlock }
+        <form onSubmit={sendForm} encType="multipart/form-data">
+          <p id='p-dir-type' style={{display: 'block'}}>Тип справочника:
+            <select name='type'>
+              { props.type === 'unit' && units.map((unit, index) => (
+                <option key={index}>{ unit }</option>
+              )) }
+              { props.type === 'repair' && repairs.map((repair, index) => (
+                <option key={index}>{ repair }</option>
+              )) }
+            </select>
+          </p>
+          <p>Название: 
+            <input type='text' name='name' id='name' ></input>
+          </p>
+          <p>Описание: 
+            <input type='text' name='description' id='description' ></input>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+          </p>
+        </form>
+      </>
     )
   } else {
     return (
-    <form onSubmit={sendForm} encType="multipart/form-data">
+    <>
       <p>Создание нового справочника</p>
       { errorBlock }
-      <p>Назначение:
-        <label>
-          <input type='radio' name='dir-type' id='unit-radio' 
-          onChange={changeHandler} />
-          Справочник агрегатов
-        </label>
-        <label>
-          <input type='radio' name='dir-type' id='repair-radio'
-          onChange={changeHandler} />
-          Справочник по обслуживанию
-        </label>
-      </p>
-      <p id='unit-type'>Тип справочника: 
-        <select name='unit'>
-          { units.map((item, index) => (
-            <option key={index}>{ item }</option>
-          )) }
-        </select>
-      </p>
-      <p id='repair-type'>Тип справочника: 
-        <select name='repair'>
-          { repairs.map((item, index) => (
-            <option key={index}>{ item }</option>
-          )) }
-        </select>
-      </p>
-      <p>Название: 
-        <input type='text' name='name' id='name'></input>
-      </p>
-      <p>Описание: 
-        <input type='text' name='description' id='description'></input>
-      </p>
-      <p>
-        <input type='submit' value='Отправить' className='form-button' />
-        <input type='reset' value='Сброс' className='form-button' />
-      </p>
-    </form>
+      <form onSubmit={sendForm} encType="multipart/form-data">
+        <p>Назначение:
+          <label>
+            <input type='radio' name='dir-type' id='unit-radio' 
+            onChange={changeHandler} />
+            Справочник агрегатов
+          </label>
+          <label>
+            <input type='radio' name='dir-type' id='repair-radio'
+            onChange={changeHandler} />
+            Справочник по обслуживанию
+          </label>
+        </p>
+        <p id='unit-type'>Тип справочника: 
+          <select name='unit'>
+            { units.map((item, index) => (
+              <option key={index}>{ item }</option>
+            )) }
+          </select>
+        </p>
+        <p id='repair-type'>Тип справочника: 
+          <select name='repair'>
+            { repairs.map((item, index) => (
+              <option key={index}>{ item }</option>
+            )) }
+          </select>
+        </p>
+        <p>Название: 
+          <input type='text' name='name' id='name'></input>
+        </p>
+        <p>Описание: 
+          <input type='text' name='description' id='description'></input>
+        </p>
+        <p className='form-controls'>
+          <input type='submit' value='Отправить' className='form-button' />
+          <input type='reset' value='Сброс' className='form-button' />
+        </p>
+      </form>
+    </>
     )
   }
 }

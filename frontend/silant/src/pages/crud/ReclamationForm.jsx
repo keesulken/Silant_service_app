@@ -211,126 +211,130 @@ export default function ReclamationForm(props) {
     return <div>No data</div>
   } else if (instance && instance !== 404) {
     return (
-      <form onSubmit={sendForm} encType="multipart/form-data">
+      <>
         <p>Редактирование рекламации</p>
         { errorBlock }
-        <p>Дата отказа: 
-          <input type='date' name='rl-date'
-          id='rl-date' onChange={countDowntime} />
-        </p>
-        <p>Наработка: 
-          <input type='text' name='operating'
-          id='operating' />
-        </p>
-        <p>Узел отказа: 
-          <select name='rl-unit'>
-            <option>{ instance.unit.name }</option>
-            { repairs.filter(item =>
-              item.type === 'UNT' && item.name !== instance.unit.name)
-              .map(item => <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Описание отказа: 
-          <input type='text' name='rl-description' 
-          id='rl-description' />
-        </p>
-        <p>Способ восстановления: 
-          <select name='recovery'>
-            <option>{ instance.repair_method.name }</option>
-            { repairs.filter(item => 
-              item.type === 'RPT' && item.name !== instance.repair_method.name)
-              .map(item => <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Используемые запасные части: 
-          <input type='text' name='rl-parts' id='rl-parts' />
-        </p>
-        <p>Дата восстановления: 
-          <input type='date' name='recovery-date' id='recovery-date' 
-          onChange={countDowntime} />
-        </p>
-        <p>Время простоя техники: <b id='downtime-p'>{ instance.downtime }</b></p>
-        <p>Машина: 
-          <select name='machine'>
-            <option>{ instance.machine.factory_number }</option>
-            { machines.filter(item => 
-              item.factory_number !== instance.machine.factory_number)
-              .map(item => 
-              <option key={item.id}>{ item.factory_number }</option>) }
-          </select>
-        </p>
-        <p>Сервисная компания: 
-          <select name='company'>
-            <option>{ instance.service_company.name }</option>
-            { companies.filter(item => 
-              item.name !== instance.service_company.name)
-              .map(item =>
-              <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>
-          <input type='submit' value='Отправить' className='form-button' />
-          <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
-        </p>
-      </form>
+        <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>
+          <p>Дата отказа: 
+            <input type='date' name='rl-date'
+            id='rl-date' onChange={countDowntime} />
+          </p>
+          <p>Наработка: 
+            <input type='text' name='operating'
+            id='operating' />
+          </p>
+          <p>Узел отказа: 
+            <select name='rl-unit'>
+              <option>{ instance.unit.name }</option>
+              { repairs.filter(item =>
+                item.type === 'UNT' && item.name !== instance.unit.name)
+                .map(item => <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Описание отказа: 
+            <input type='text' name='rl-description' 
+            id='rl-description' />
+          </p>
+          <p>Способ восстановления: 
+            <select name='recovery'>
+              <option>{ instance.repair_method.name }</option>
+              { repairs.filter(item => 
+                item.type === 'RPT' && item.name !== instance.repair_method.name)
+                .map(item => <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Используемые запасные части: 
+            <input type='text' name='rl-parts' id='rl-parts' />
+          </p>
+          <p>Дата восстановления: 
+            <input type='date' name='recovery-date' id='recovery-date' 
+            onChange={countDowntime} />
+          </p>
+          <p>Время простоя техники: <b id='downtime-p'>{ instance.downtime }</b></p>
+          <p>Машина: 
+            <select name='machine'>
+              <option>{ instance.machine.factory_number }</option>
+              { machines.filter(item => 
+                item.factory_number !== instance.machine.factory_number)
+                .map(item => 
+                <option key={item.id}>{ item.factory_number }</option>) }
+            </select>
+          </p>
+          <p>Сервисная компания: 
+            <select name='company'>
+              <option>{ instance.service_company.name }</option>
+              { companies.filter(item => 
+                item.name !== instance.service_company.name)
+                .map(item =>
+                <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+          </p>
+        </form>
+      </>
     )
   } else {
     
     
     
     return (
-      <form onSubmit={sendForm} encType="multipart/form-data">
+      <>
         <p>Создание новой рекламации</p>
         { errorBlock }
-        <p>Дата отказа: 
-          <input type='date' name='rl-date' id='rl-date' 
-          onChange={countDowntime} />
-        </p>
-        <p>Наработка: 
-          <input type='text' name='operating' id='operating' />
-        </p>
-        <p>Узел отказа: 
-          <select name='rl-unit'>
-            { repairs.filter(item =>
-              item.type === 'UNT')
-              .map(item => <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Описание отказа: 
-          <input type='text' name='rl-description' id='rl-description' />
-        </p>
-        <p>Способ восстановления: 
-          <select name='recovery'>
-            { repairs.filter(item => 
-              item.type === 'RPT')
-              .map(item => <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>Используемые запасные части: 
-          <input type='text' name='rl-parts' id='rl-parts' />
-        </p>
-        <p>Дата восстановления: 
-          <input type='date' name='recovery-date' id='recovery-date' 
-          onChange={countDowntime} />
-        </p>
-        <p>Время простоя техники: <b id='downtime-p'>{ downtime }</b></p>
-        <p>Машина: 
-          <select name='machine'>
-            { machines.map(item => 
-              <option key={item.id}>{ item.factory_number }</option>) }
-          </select>
-        </p>
-        <p>Сервисная компания: 
-          <select name='company'>
-            { companies.map(item =>
-              <option key={item.pk}>{ item.name }</option>) }
-          </select>
-        </p>
-        <p>
-          <input type='submit' value='Отправить' className='form-button' />
-          <input type='reset' value='Сброс' className='form-button' />
-        </p>
-      </form>
+        <form onSubmit={sendForm} encType="multipart/form-data" className='creation-form'>
+          <p>Дата отказа: 
+            <input type='date' name='rl-date' id='rl-date' 
+            onChange={countDowntime} />
+          </p>
+          <p>Наработка: 
+            <input type='text' name='operating' id='operating' />
+          </p>
+          <p>Узел отказа: 
+            <select name='rl-unit'>
+              { repairs.filter(item =>
+                item.type === 'UNT')
+                .map(item => <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Описание отказа: 
+            <input type='text' name='rl-description' id='rl-description' />
+          </p>
+          <p>Способ восстановления: 
+            <select name='recovery'>
+              { repairs.filter(item => 
+                item.type === 'RPT')
+                .map(item => <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p>Используемые запасные части: 
+            <input type='text' name='rl-parts' id='rl-parts' />
+          </p>
+          <p>Дата восстановления: 
+            <input type='date' name='recovery-date' id='recovery-date' 
+            onChange={countDowntime} />
+          </p>
+          <p>Время простоя техники: <b id='downtime-p'>{ downtime }</b></p>
+          <p>Машина: 
+            <select name='machine'>
+              { machines.map(item => 
+                <option key={item.id}>{ item.factory_number }</option>) }
+            </select>
+          </p>
+          <p>Сервисная компания: 
+            <select name='company'>
+              { companies.map(item =>
+                <option key={item.pk}>{ item.name }</option>) }
+            </select>
+          </p>
+          <p className='form-controls'>
+            <input type='submit' value='Отправить' className='form-button' />
+            <input type='reset' value='Сброс' className='form-button' />
+          </p>
+        </form>
+      </>
     )
   }
 }

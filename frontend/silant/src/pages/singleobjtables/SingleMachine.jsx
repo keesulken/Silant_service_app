@@ -41,32 +41,32 @@ export default function SingleMachine(props) {
             </thead>
             <tbody>
                 <tr>
-                    <td><Link to={'/unit/' + item.machine_model.pk}
+                    <td data-label='Модель техники'><Link to={'/unit/' + item.machine_model.pk}
                     >{ item.machine_model.name }</Link></td>
-                    <td><Link to={'/unit/' + item.engine_model.pk}
+                    <td data-label='Модель двигателя'><Link to={'/unit/' + item.engine_model.pk}
                     >{ item.engine_model.name }</Link></td>
-                    <td>{ item.engine_number }</td>
-                    <td><Link to={'/unit/' + item.transmission_model.pk}
+                    <td data-label='Зав. № двигателя'>{ item.engine_number }</td>
+                    <td data-label='Модель трансмиссии'><Link to={'/unit/' + item.transmission_model.pk}
                     >{ item.transmission_model.name }</Link></td>
-                    <td>{ item.transmission_number }</td>
-                    <td><Link to={'/unit/' + item.drive_axle_model.pk}
+                    <td data-label='Зав. № трансмиссии'>{ item.transmission_number }</td>
+                    <td data-label='Модель ведущего моста'><Link to={'/unit/' + item.drive_axle_model.pk}
                     >{ item.drive_axle_model.name }</Link></td>
-                    <td>{ item.drive_axle_number }</td>
-                    <td><Link to={'/unit/' + item.steered_axle_model.pk}
+                    <td data-label='Зав. № ведущего моста'>{ item.drive_axle_number }</td>
+                    <td data-label='Модель управляемого моста'><Link to={'/unit/' + item.steered_axle_model.pk}
                     >{ item.steered_axle_model.name }</Link></td>
-                    <td>{ item.steered_axle_number }</td>
-                    <td>{ item.supply_contract_number_date }</td>
-                    <td>{ item.dispatch_date }</td>
-                    <td>{ item.consignee }</td>
-                    <td>{ item.delivery_address }</td>
-                    <td>{ item.equipment }</td>
-                    { item.client && <td><Link to={'/client/' + item.client.pk}
+                    <td data-label='Зав. № управляемого моста'>{ item.steered_axle_number }</td>
+                    <td data-label='Договор поставки №, дата'>{ item.supply_contract_number_date }</td>
+                    <td data-label='Дата отгрузки с завода'>{ item.dispatch_date }</td>
+                    <td data-label='Грузополучатель (конечный потребитель)'>{ item.consignee }</td>
+                    <td data-label='Адрес поставки (эксплуатации)'>{ item.delivery_address }</td>
+                    <td data-label='Комплектация (доп. опции)'>{ item.equipment }</td>
+                    { item.client && <td data-label='Клиент'><Link to={'/client/' + item.client.pk}
                     >{ item.client.name }</Link></td> }
-                    { !item.client && <td>---</td> }
+                    { !item.client && <td data-label='Клиент'>---</td> }
                     { item.service_company && 
-                    <td><Link to={'/company/' + item.service_company.pk}
+                    <td data-label='Сервисная компания'><Link to={'/company/' + item.service_company.pk}
                     >{ item.service_company.name }</Link></td> }
-                    { !item.service_company && <td>---</td> }
+                    { !item.service_company && <td data-label='Сервисная компания'>---</td> }
                 </tr>
             </tbody>
           </table>

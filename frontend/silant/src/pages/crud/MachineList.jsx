@@ -79,7 +79,7 @@ export default function MachineList() {
         <p>Обновление данных о технике</p>
         { errorBlock }
         { deleteBlock }
-        <table>
+        <table className='machine-update-table'>
           <thead>
             <tr>
               <th>Зав. № машины</th>
@@ -91,31 +91,31 @@ export default function MachineList() {
               <th>Комплектация (доп. опции)</th>
               <th>Клиент</th>
               <th>Сервисная компания</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { machines.map(item => (
               <tr key={item.id}>
-                <td><Link to={'/machine/' + item.id}
+                <td data-label='Зав. № машины'><Link to={'/machine/' + item.id}
                 >{ item.factory_number }</Link></td>
-                <td><Link to={'/unit/' + item.machine_model.pk}
+                <td data-label='Модель техники'><Link to={'/unit/' + item.machine_model.pk}
                 >{ item.machine_model.name }</Link></td>
-                <td>{ item.supply_contract_number_date }</td>
-                <td>{ item.dispatch_date }</td>
-                <td>{ item.consignee }</td>
-                <td>{ item.delivery_address }</td>
-                <td>{ item.equipment }</td>
-                { item.client && <td><Link to={'/client/' + item.client.pk}
+                <td data-label='Договор поставки №, дата'>{ item.supply_contract_number_date }</td>
+                <td data-label='Дата отгрузки с завода'>{ item.dispatch_date }</td>
+                <td data-label='Грузополучатель (конечный потребитель)'>{ item.consignee }</td>
+                <td data-label='Адрес поставки (эксплуатации)'>{ item.delivery_address }</td>
+                <td data-label='Комплектация (доп. опции)'>{ item.equipment }</td>
+                { item.client && <td data-label='Клиент'><Link to={'/client/' + item.client.pk}
                 >{ item.client.name }</Link></td> }
-                { !item.client && <td>---</td> }
+                { !item.client && <td data-label='Клиент'>---</td> }
                 { item.service_company && 
-                <td><Link to={'/company/' + item.service_company.pk}
+                <td data-label='Сервисная компания'><Link to={'/company/' + item.service_company.pk}
                 >{ item.service_company.name }</Link></td> }
-                { !item.service_company && <td>---</td> }
-                <td><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
-                <td><button onClick={(e) => 
+                { !item.service_company && <td data-label='Сервисная компания'>---</td> }
+                <td data-label=' '><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
+                <td data-label=' '><button onClick={(e) => 
                 deleteHolder(item.id, 'machine', 
                 `${item.machine_model.name} №${item.factory_number}`, e)}
                 >Удалить</button></td>

@@ -357,7 +357,7 @@ export default function UserForm(props) {
               <button onClick={clickHandler}>Подтвердить</button>
               <button onClick={clickHandler}>Отмена</button>
             </div>
-            <p>
+            <p className='form-controls'>
               <input type='submit' value='Отправить' className='form-button' />
               <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
             </p>
@@ -413,7 +413,7 @@ export default function UserForm(props) {
               <button onClick={clickHandler}>Подтвердить</button>
               <button onClick={clickHandler}>Отмена</button>
             </div>
-            <p>
+            <p className='form-controls'>
               <input type='submit' value='Отправить' className='form-button' />
               <input type='reset' value='Сброс' className='form-button' />
             </p>

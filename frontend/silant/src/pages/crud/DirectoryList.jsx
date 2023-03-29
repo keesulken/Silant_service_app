@@ -75,29 +75,29 @@ export default function DirectoryList() {
       <hr />
         <p>Изменение данных справочников по обслуживанию</p>
         { repairDeleteBlock }
-        <table>
+        <table className='directory-update-table'>
           <thead>
             <tr>
               <th>Тип справочника</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { repairs.map(item => (
               <tr key={item.id}>
-                <td>{ item.type }</td>
-                <td><Link to={'/repair/' + item.id}
+                <td data-label='Тип справочника'>{ item.type }</td>
+                <td data-label='Название'><Link to={'/repair/' + item.id}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('repair', item.id, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('repair', item.id, e)}
                 >Изменить</button></td>
-                <td><button onClick={(e) => 
+                <td data-label=' '><button onClick={(e) => 
                 deleteRepairHolder(item.id, 'repair', 
                 `${item.type} ${item.name}`, e)}>Удалить</button></td>
               </tr>
@@ -111,29 +111,29 @@ export default function DirectoryList() {
       <div>
         <p>Изменение данных справочников техники</p>
         { unitDeleteBlock }
-        <table>
+        <table className='directory-update-table'>
           <thead>
             <tr>
               <th>Тип справочника</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { units.map(item => (
               <tr key={item.id}>
-                <td>{ item.type }</td>
-                <td><Link to={'/unit/' + item.id}
+                <td data-label='Тип справочника'>{ item.type }</td>
+                <td data-label='Название'><Link to={'/unit/' + item.id}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('unit', item.id, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('unit', item.id, e)}
                 >Изменить</button></td>
-                <td><button onClick={(e) => 
+                <td data-label=' '><button onClick={(e) => 
                 deleteUnitHolder(item.id, 'unit', 
                 `${item.type} ${item.name}`, e)}>Удалить</button></td>
               </tr>
@@ -149,29 +149,29 @@ export default function DirectoryList() {
       <div>
         <p>Изменение данных справочников техники</p>
         { unitDeleteBlock }
-        <table>
+        <table className='directory-update-table'>
           <thead>
             <tr>
               <th>Тип справочника</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { units.map(item => (
               <tr key={item.id}>
-                <td>{ item.type }</td>
-                <td><Link to={'/unit/' + item.id}
+                <td data-label='Тип справочника'>{ item.type }</td>
+                <td data-label='Название'><Link to={'/unit/' + item.id}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('unit', item.id, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('unit', item.id, e)}
                 >Изменить</button></td>
-                <td><button onClick={(e) => 
+                <td data-label=' '><button onClick={(e) => 
                 deleteUnitHolder(item.id, 'unit', 
                 `${item.type} ${item.name}`, e)}>Удалить</button></td>
               </tr>
@@ -181,29 +181,29 @@ export default function DirectoryList() {
         <hr />
         <p>Изменение данных справочников по обслуживанию</p>
         { repairDeleteBlock }
-        <table>
+        <table className='directory-update-table'>
           <thead>
             <tr>
               <th>Тип справочника</th>
               <th>Название</th>
               <th>Описание</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { repairs.map(item => (
               <tr key={item.id}>
-                <td>{ item.type }</td>
-                <td><Link to={'/repair/' + item.id}
+                <td data-label='Тип справочника'>{ item.type }</td>
+                <td data-label='Название'><Link to={'/repair/' + item.id}
                 >{ item.name }</Link></td>
-                <td>
+                <td data-label='Описание'>
                   { item.description.length > 20 && item.description.slice(0, 20) + '...' }
                   { item.description.length <= 20 && item.description }
                 </td>
-                <td><button onClick={(e) => updateHolder('repair', item.id, e)}
+                <td data-label=' '><button onClick={(e) => updateHolder('repair', item.id, e)}
                 >Изменить</button></td>
-                <td><button onClick={(e) => 
+                <td data-label=' '><button onClick={(e) => 
                 deleteRepairHolder(item.id, 'repair', 
                 `${item.type} ${item.name}`, e)}>Удалить</button></td>
               </tr>

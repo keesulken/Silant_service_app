@@ -63,8 +63,8 @@ export default function LoginPage(props) {
 
   
   return (
-    <form onSubmit={handleSubmit}>
-      <p>Вход в систему</p>
+    <form onSubmit={handleSubmit} className='login-page'>
+      <h3>Вход в систему</h3>
       { errorBlock }
       <p>Имя пользователя: <input type='text' id='username' /></p>
       <p>Пароль: <input type='password' id='password' /></p>

@@ -78,7 +78,7 @@ export default function MaintenanceList() {
         <p>Обновление данных о ТО</p>
         { errorBlock }
         { deleteBlock }
-        <table>
+        <table className='maintenance-update-table'>
           <thead>
             <tr>
               <th>Вид ТО</th>
@@ -89,27 +89,27 @@ export default function MaintenanceList() {
               <th>Организация, проводившая ТО</th>
               <th>Машина</th>
               <th>Сервисная компания</th>
-              <th>---</th>
-              <th>---</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             { maintenance.map(item => (
               <tr key={item.id}>
-                <td><Link to={'/repair/' + item.type.pk}
+                <td data-label='Вид ТО'><Link to={'/repair/' + item.type.pk}
                 >{ item.type.name }</Link></td>
-                <td>{ item.date }</td>
-                <td>{ item.operating_time }</td>
-                <td>{ item.work_order_number }</td>
-                <td>{ item.work_order_date }</td>
-                <td><Link to={'/repair/' + item.maintenance_holder.pk}
+                <td data-label='Дата проведения ТО'>{ item.date }</td>
+                <td data-label='Наработка м/час'>{ item.operating_time }</td>
+                <td data-label='№ заказ-наряда'>{ item.work_order_number }</td>
+                <td data-label='Дата заказ-наряда'>{ item.work_order_date }</td>
+                <td data-label='Организация, проводившая ТО'><Link to={'/repair/' + item.maintenance_holder.pk}
                 >{ item.maintenance_holder.name }</Link></td>
-                <td><Link to={'/machine/' + item.machine.pk}
+                <td data-label='Машина'><Link to={'/machine/' + item.machine.pk}
                 >{ item.machine.factory_number }</Link></td>
-                <td><Link to={'/company/' + item.service_company.pk}
+                <td data-label='Сервисная компания'><Link to={'/company/' + item.service_company.pk}
                 >{ item.service_company.name }</Link></td>
-                <td><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
-                <td><button onClick={(e) => 
+                <td data-label=' '><button onClick={(e) => updateHolder(item.id, e)}>Изменить</button></td>
+                <td data-label=' '><button onClick={(e) => 
                 deleteHolder(item.id, 'maintenance', `${item.type.name} от ${item.date}`, e)}
                 >Удалить</button></td>
               </tr>
