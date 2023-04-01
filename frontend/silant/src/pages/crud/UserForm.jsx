@@ -4,6 +4,9 @@ import Forbidden403 from '../Forbidden403';
 import NotFoundPage from '../NotFoundPage';
 import { useNavigate } from 'react-router-dom';
 import ErrorBlock from '../app/ErrorBlock';
+import UserFormProfileBlock from './UserFormProfileBlock';
+import UserFormWarning from './UserFormWarning';
+import UserFormPasswordBlock from './UserFormPasswordBlock';
 
 export default function UserForm(props) {
   let {id} = useParams();
@@ -11,9 +14,12 @@ export default function UserForm(props) {
   let [profName, setProfName] = useState();
   let [profDesc, setProfDesc] = useState();
   let [errorBlock, setErrorBlock] = useState();
-  let name = document.getElementById('p-name');
-  let desc = document.getElementById('p-desc');
-  let warning = document.getElementById('warning');
+  let [warningBlock, setWarningBlock] = useState();
+  let [profileBlock, setProfileBlock] = useState();
+  let [passwordBlock, setPasswordBlock] = useState(
+    <UserFormPasswordBlock button={true} handler={showInput} />
+  );
+  let resetBtnPress = false;
   let cb = document.getElementById('admin-cb');
   let input = document.getElementById('password-input');
   let navigate = useNavigate();
@@ -71,79 +77,85 @@ export default function UserForm(props) {
 
 
   useEffect(()=>{
-      if (user && name && desc) {
-        warning.style.display = 'none';
-        if (user.type === tags[0]) {
-          name.style.display = 'none';
-          desc.style.display = 'none';
+      if (user) {
+        if (document.querySelector('form')) {
+          document.getElementById('username').value = user.username;
         };
-        if (user.is_superuser) {
+        if (user.type !== tags[0]) {
+          let block = <UserFormProfileBlock name={profName} desc={profDesc} />;
+          setProfileBlock(block);
+        };
+        if (user.is_superuser && cb) {
           cb.checked = true;
         };
-        if (input) {
-          input.style.display = 'none';
-        };
-      } else if (name && desc) {
-        name.style.display = 'none';
-        desc.style.display = 'none';
-        warning.style.display = 'none';
       };
-  })
-
-
-  function selectHandler (e) {
-    if (e.target.value === 'Представитель производителя') {
-      name.style.display = 'none';
-      desc.style.display = 'none';
-    } else {
-      name.style.display = 'block';
-      desc.style.display = 'block';
-    }
-  }
+  }, [user])
 
 
   function checkboxWarning () {
     if (cb.checked) {
-      warning.style.display = 'block';
+      let block = <UserFormWarning handler={warningHandler} />;
+      setWarningBlock(block);
     } else {
-      warning.style.display = 'none';
+      warningVoid();
     }
   }
 
 
-  function clickHandler (e) {
+  function warningVoid () {
+    setWarningBlock();
+  }
+
+
+  function warningHandler (e) {
     e.preventDefault();
     if (e.target.textContent === 'Подтвердить') {
-      warning.style.display = 'none';
+      warningVoid();
     } else {
       cb.checked = false;
-      warning.style.display = 'none';
-    }
+      warningVoid();
+    };
+  }
+
+
+  function typeChangeHandler () {
+    let select = document.querySelector('select').value;
+    if (select !== tags[0]) {
+      let block = <UserFormProfileBlock />;
+      setProfileBlock(block);
+      if (user) {
+        if (profName) {
+          dataLoader();
+        };
+      };
+    } else {
+      setProfileBlock();
+    };
   }
 
 
   function resetHandler () {
+    resetBtnPress = true;
+    cb.checked = false;
+    setWarningBlock();
     if (user) {
-      if (user.type === tags[1] || user.type === tags[2]) {
-        warning.style.display = 'none';
-        if (name.style.display = 'none') {
-          name.style.display = 'block';
-          desc.style.display = 'block';
-        }
+      dataLoader();
+      let btn = document.getElementById('reset-with-user');
+      btn.addEventListener('mouseleave', resetLoader);
+      if (user.type === tags[0]) {
+        let block = <UserFormProfileBlock hidden={true} />;
+        setProfileBlock(block);
       };
     } else {
-      warning.style.display = 'none';
-      name.style.display = 'none';
-      desc.style.display = 'none';
+      setProfileBlock();
     };
   }
 
 
   function showInput (e) {
     e.preventDefault();
-    let btn = document.getElementById('password-btn');
-    btn.style.display = 'none';
-    input.style.display = 'block';
+    let block = <UserFormPasswordBlock handler={passwordChanger} />;
+    setPasswordBlock(block);
   }
 
 
@@ -153,14 +165,18 @@ export default function UserForm(props) {
     && user !== 404) {
       document.getElementById('username').value = user.username;
       if (profName) {
-        document.getElementById('prof-name').value = profName;
-        document.getElementById('description').value = profDesc;
+        let block = <UserFormProfileBlock name={profName} desc={profDesc} />;
+        setProfileBlock(block);
       };
     };
   }
 
 
-  useEffect(dataLoader)
+  function resetLoader () {
+    dataLoader();
+    let btn = document.getElementById('reset-with-user');
+    btn.removeEventListener('mouseleave', resetLoader);
+  }
 
 
   function sendForm (e) {
@@ -260,7 +276,7 @@ export default function UserForm(props) {
 
   function passwordChanger () {
     let password = document.getElementById('password').value;
-    let url = 'http://127.0.0.1:8000/api/v1/password/' + user.id;
+    let url = 'http://127.0.0.1:8000/api/v1/password/' + id;
     let options = {
       method: 'POST',
       headers: {
@@ -322,18 +338,13 @@ export default function UserForm(props) {
               <input type='text' name='username' id='username' />
             </p>
             <p style={{ display: 'block'}}>Тип учётной записи:
-              <select onChange={selectHandler} name='user-type'>
+              <select onChange={typeChangeHandler} name='user-type'>
                 <option>{user.type}</option>
                 { tags.filter(item => item !== user.type)
                 .map((item, index) => <option key={index}>{item}</option>) }
               </select>
             </p>
-            <p id='p-name'>Название в профиле:
-              <input type='text' name='prof-name' id='prof-name' />
-            </p>
-            <p id='p-desc'>Описание в профиле:
-              <input type='text' name='description' id='description' />
-            </p>
+            { profileBlock }
             <p>
               { user.is_superuser && (
               <label>
@@ -347,28 +358,14 @@ export default function UserForm(props) {
                 onChange={checkboxWarning} />
               </label>) }
             </p>
-            <div id='warning'>
-              <p>
-                Наделение ненадёжного пользователя правами администратора 
-                влечёт угрозу безопасности системы 
-                и может стать причиной несанкционированного доступа и утечки данных! 
-                Вы действительно хотите дать этому пользователю права администратора?
-              </p>
-              <button onClick={clickHandler}>Подтвердить</button>
-              <button onClick={clickHandler}>Отмена</button>
-            </div>
+            { warningBlock }
             <p className='form-controls'>
               <input type='submit' value='Отправить' className='form-button' />
-              <input type='reset' value='Сброс' onMouseLeave={dataLoader} className='form-button' />
+              <input type='reset' value='Сброс' 
+              id='reset-with-user' className='form-button' />
             </p>
           </form>
-          <p id='password-btn'>Пароль:
-            <button onClick={showInput}>Сменить пароль</button>
-          </p>
-          <p id='password-input'>Пароль:
-            <input type='text' name='password' id='password' />
-            <button onClick={passwordChanger}>Отправить</button>
-          </p>
+          { passwordBlock }
         </div>
         )
       } else {
@@ -384,18 +381,13 @@ export default function UserForm(props) {
               <input type='text' name='password' id='password' />
             </p>
             <p>Тип учётной записи:
-              <select onChange={selectHandler} name='user-type'>
+              <select onChange={typeChangeHandler} name='user-type'>
                 <option>Представитель производителя</option>
                 <option>Сервисная организация</option>
                 <option>Конечный клиент</option>
               </select>
             </p>
-            <p id='p-name'>Название в профиле:
-              <input type='text' name='prof-name' id='prof-name' />
-            </p>
-            <p id='p-desc'>Описание в профиле:
-              <input type='text' name='description' id='description' />
-            </p>
+            { profileBlock }
             <p>
               <label>
                 Права администратора
@@ -403,16 +395,7 @@ export default function UserForm(props) {
                 onChange={checkboxWarning} />
               </label>
             </p>
-            <div id='warning'>
-              <p>
-                Наделение ненадёжного пользователя правами администратора 
-                влечёт угрозу безопасности системы 
-                и может стать причиной несанкционированного доступа и утечки данных! 
-                Вы действительно хотите дать этому пользователю права администратора?
-              </p>
-              <button onClick={clickHandler}>Подтвердить</button>
-              <button onClick={clickHandler}>Отмена</button>
-            </div>
+            { warningBlock }
             <p className='form-controls'>
               <input type='submit' value='Отправить' className='form-button' />
               <input type='reset' value='Сброс' className='form-button' />
