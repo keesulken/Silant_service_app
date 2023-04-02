@@ -164,6 +164,10 @@ export default function UserForm(props) {
     && user
     && user !== 404) {
       document.getElementById('username').value = user.username;
+      if (profName && document.getElementById('prof-name')) {
+        document.getElementById('prof-name').value = profName;
+        document.getElementById('description').value = profDesc;
+      };
       if (profName) {
         let block = <UserFormProfileBlock name={profName} desc={profDesc} />;
         setProfileBlock(block);
